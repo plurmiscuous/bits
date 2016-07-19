@@ -7,7 +7,7 @@ Bits is a permutation/manipulation library created provide a myriad of operation
 
 ## Usage
 
-The two primary files are `bits.c` and the accompanying `bits.h`. The files in the `inc\` directory are required for compilation.
+The two primary files are `bits.c` and the accompanying `bits.h`. The files in the `inc/` directory are required for compilation.
 
 ## Testing
 
