@@ -3,7 +3,7 @@ Bits
 
 ## About
 
-Bits is a permutation/manipulation library providing a myriad of operations for a range of word sizes.
+Bits is a bit permutation/manipulation library.
 
 ## Usage
 
