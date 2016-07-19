@@ -25,11 +25,10 @@ GNU GPL v3 or higher.
 
 ### Credit
 
-Much of this code is inspired by the code, pseudocode, and research of others. A very short list of those I am grateful for is below.
+Much of this code is inspired by the code, pseudocode, and research of others. A _very_ short list of those who's work I am grateful for is below. This list will be expanded as the project nears completion.
 
 + Henry S. Warren, Jr.
-+ Sean Eron Anderson of Stanford
++ Sean E. Anderson
 + Jasper Neumann
++ Ruby B. Lee
 + The folks at https://chessprogramming.wikispaces.com/
-+ Ruby B. Lee of Princeton
-...Many more to be added as the project nears completion
