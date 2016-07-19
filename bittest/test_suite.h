@@ -1,0 +1,85 @@
+#ifndef _TEST_H_
+#define _TEST_H_
+
+#include <stdint.h>
+
+#include "../bits.h"
+#include "../inc/extint.h"
+#include "../inc/template.h"
+#include "../util/print.h"
+
+#define DISPLAY_DIFF_OFF 0
+#define DISPLAY_DIFF_ON  1
+
+static const size_t NR = ((uintmax_t) 1 << 8);
+
+static const uint128_t VALUES[] = {
+    u128(0x0000000000000000, 0x0000000000000000),
+    u128(0x1111111111111111, 0x1111111111111111),
+    u128(0x2222222222222222, 0x2222222222222222),
+    u128(0x3333333333333333, 0x3333333333333333),
+    u128(0x4444444444444444, 0x4444444444444444),
+    u128(0x5555555555555555, 0x5555555555555555),
+    u128(0x6666666666666666, 0x6666666666666666),
+    u128(0x7777777777777777, 0x7777777777777777),
+    u128(0x8888888888888888, 0x8888888888888888),
+    u128(0x9999999999999999, 0x9999999999999999),
+    u128(0xAAAAAAAAAAAAAAAA, 0xAAAAAAAAAAAAAAAA),
+    u128(0xBBBBBBBBBBBBBBBB, 0xBBBBBBBBBBBBBBBB),
+    u128(0xCCCCCCCCCCCCCCCC, 0xCCCCCCCCCCCCCCCC),
+    u128(0xDDDDDDDDDDDDDDDD, 0xDDDDDDDDDDDDDDDD),
+    u128(0xEEEEEEEEEEEEEEEE, 0xEEEEEEEEEEEEEEEE),
+    u128(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF),
+    u128(0xFEDCBA9876543210, 0x0123456789ABCDEF),
+    u128(0xEDCBA9876543210F, 0xF0123456789ABCDE),
+    u128(0xDCBA9876543210FE, 0xEF0123456789ABCD),
+    u128(0xCBA9876543210FED, 0xDEF0123456789ABC),
+    u128(0xBA9876543210FEDC, 0xCDEF0123456789AB),
+    u128(0xA9876543210FEDCB, 0xBCDEF0123456789A),
+    u128(0x9876543210FEDCBA, 0xABCDEF0123456789),
+    u128(0x876543210FEDCBA9, 0x9ABCDEF012345678),
+    u128(0x76543210FEDCBA98, 0x89ABCDEF01234567),
+    u128(0x6543210FEDCBA987, 0x789ABCDEF0123456),
+    u128(0x543210FEDCBA9876, 0x6789ABCDEF012345),
+    u128(0x43210FEDCBA98765, 0x56789ABCDEF01234),
+    u128(0x3210FEDCBA987654, 0x456789ABCDEF0123),
+    u128(0x210FEDCBA9876543, 0x3456789ABCDEF012),
+    u128(0x10FEDCBA98765432, 0x23456789ABCDEF01),
+    u128(0x0FEDCBA987654321, 0x123456789ABCDEF0),
+    u128(0x0123456789ABCDEF, 0xFEDCBA9876543210),
+    u128(0xF0123456789ABCDE, 0xEDCBA9876543210F),
+    u128(0xEF0123456789ABCD, 0xDCBA9876543210FE),
+    u128(0xDEF0123456789ABC, 0xCBA9876543210FED),
+    u128(0xCDEF0123456789AB, 0xBA9876543210FEDC),
+    u128(0xBCDEF0123456789A, 0xA9876543210FEDCB),
+    u128(0xABCDEF0123456789, 0x9876543210FEDCBA),
+    u128(0x9ABCDEF012345678, 0x876543210FEDCBA9),
+    u128(0x89ABCDEF01234567, 0x76543210FEDCBA98),
+    u128(0x789ABCDEF0123456, 0x6543210FEDCBA987),
+    u128(0x6789ABCDEF012345, 0x543210FEDCBA9876),
+    u128(0x56789ABCDEF01234, 0x43210FEDCBA98765),
+    u128(0x456789ABCDEF0123, 0x3210FEDCBA987654),
+    u128(0x3456789ABCDEF012, 0x210FEDCBA9876543),
+    u128(0x23456789ABCDEF01, 0x10FEDCBA98765432),
+    u128(0x123456789ABCDEF0, 0x0FEDCBA987654321)
+};
+
+static const size_t NT = sizeof VALUES / sizeof VALUES[0];
+
+void init_suite(int output_diff);
+void init_test(const char* name);
+void init_width();
+void term_width(void);
+void term_test(void);
+void term_suite(void);
+
+#define TEST_DECL(N)                                                                                            \
+    uint##N##_t* T##N;                                                                                          \
+    uint##N##_t* P##N;                                                                                          \
+    uint##N##_t* R##N;                                                                                          \
+    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual);          \
+    void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual);                \
+    void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output);
+TEMPLATE_STD(TEST_DECL)
+
+#endif // _TEST_H_
