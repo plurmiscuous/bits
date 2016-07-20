@@ -9,10 +9,7 @@ Bits is a bit permutation/manipulation library.
 
 The two primary files are `bits.c` and the accompanying `bits.h`. The files in the `inc/` directory are required for compilation.
 
-`bits.h` contains generic function declaration macros of the form
-```C
-uint##N##_t func##N(uint##N##_t);
-```
+`bits.h` contains generic function declaration macros of the form `uint##N##_t func##N(uint##N##_t);`
 which expand into declarations for each bit-width:
 ```C
 uint8_t func8(uint8_t);
