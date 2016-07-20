@@ -1,7 +1,7 @@
 #ifndef _TEST_IMPL_H_
 #define _TEST_IMPL_H_
 
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 void test_pop(void);
 void test_par(void);

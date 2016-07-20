@@ -4,7 +4,7 @@
 #include "print.h"
 #include "../bits.h"
 #include "../inc/extint.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 uint8_t print8(uint8_t u8) {
     return u8;

@@ -9,25 +9,11 @@
 #include "test_suite.h"
 
 #include "../bits.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 // NB: Tests for functions that return 'int' are storing results as 'uint' and
 // using the unsigned versions for comparisons. But this is happening for both
 // the library and naive implementations so conversions ought to be consistent.
-
-#define TEMPLATE_STD_TEST(TEST, func)                                          \
-    TEST(  8, func)                                                            \
-    TEST( 16, func)                                                            \
-    TEST( 32, func)                                                            \
-    TEST( 64, func)                                                            \
-    TEST(128, func)                                                            \
-
-#define TEMPLATE_STD_TEST_INV(TEST, func, ifunc)                               \
-    TEST(  8, func, ifunc)                                                     \
-    TEST( 16, func, ifunc)                                                     \
-    TEST( 32, func, ifunc)                                                     \
-    TEST( 64, func, ifunc)                                                     \
-    TEST(128, func, ifunc)                                                     \
 
 #define TEST_COMMON(IMPL, name, func)                                          \
     TEST_FUNC_HEAD(name, func)                                                 \

@@ -6,7 +6,7 @@
 
 #include "bits.h"
 #include "inc/extint.h"
-#include "inc/template.h"
+#include "inc/N.h"
 
 #if ASSERT
     #include <assert.h>

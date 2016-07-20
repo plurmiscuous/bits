@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #include "../inc/extint.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 #define EXPECT_DECL(N)                                                                             \
     int expect_pop##N(uint##N##_t bits);                                                           \

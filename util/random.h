@@ -2,7 +2,7 @@
 #define _RANDOM_H_
 
 #include "../inc/extint.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 void init_rand(void);
 

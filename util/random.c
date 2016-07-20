@@ -3,7 +3,7 @@
 
 #include "random.h"
 #include "../inc/extint.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 
 static uint64_t state_64[2];
 

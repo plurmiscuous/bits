@@ -16,7 +16,7 @@ OBJS := $(OBJD)/bits.o 				\
 		$(OBJD)/test_funcs.o 		\
 		$(OBJD)/test_suite.o
 HEAD := inc/extint.h 				\
-		inc/template.h
+		inc/N.h
 
 .PRECIOUS: $(OBJD)/%.o
 

@@ -5,7 +5,7 @@
 
 #include "../bits.h"
 #include "../inc/extint.h"
-#include "../inc/template.h"
+#include "../inc/N.h"
 #include "../util/print.h"
 
 #define DISPLAY_DIFF_OFF 0
