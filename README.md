@@ -15,7 +15,7 @@ Currenty bit-widths of 8, 16, 32, 64, and 128 are supported. The project is exte
 
 ### Extending
 
-The following file must contain appropriate entries for new bit-widths:
+The following files must contain appropriate entries for new bit-widths:
 + `inc/extint.h`: necessary `typedef`(s) for the `uintN_t` type(s)
 + `inc/N.h`: `#define` and `enum LOGS`, masks, LFSR taps, `TEMPLATE_*`
 
