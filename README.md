@@ -17,16 +17,16 @@ Currenty bit-widths of 8, 16, 32, 64, and 128 are supported. The project is exte
 
 Once support is provided by the compiler, the following must be modified for the new bit-widths:
 + `bits.h`:
-+ + an entry in `enum LOGS`
-+ + `#define BITSN (1 << LOGN)`
-+ + mask values and LFSR taps
+++ an entry in `enum LOGS`
+++ `#define BITSN (1 << LOGN)`
+++ mask values and LFSR taps
 + `inc/extint.h`:
-+ + appropriate `typedef`(s) for the `uintN_t` type(s)
+++ appropriate `typedef`(s) for the `uintN_t` type(s)
 + `inc/template.h`:
-+ + the `TEMPLATE_STD` and `TEMPLATE_ALL` macros
-+ + the `TEMPLATE_SQR` macro, if `N` is a perfect square
+++ the `TEMPLATE_STD` and `TEMPLATE_ALL` macros
+++ the `TEMPLATE_SQR` macro, if `N` is a perfect square
 + `bittest/test_funcs.c`:
-+ + any `TEMPLATE_STD_TEST*` or `TEMPLATE_SQR_TEST*` macros
+++ any `TEMPLATE_STD_TEST*` or `TEMPLATE_SQR_TEST*` macros
 
 ## Testing
 
