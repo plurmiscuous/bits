@@ -9,9 +9,22 @@ Bits is a bit permutation/manipulation library.
 
 The two primary files are `bits.c` and the accompanying `bits.h`. The files in the `inc/` directory are required for compilation.
 
+`bits.h` contains generic function declaration macros of the form
+```C
+uint##N##_t func##N(uint##N##_t);
+```
+which expand into declarations for each bit-width:
+```C
+uint8_t func8(uint8_t);
+uint16_t func16(uint16_t);
+uint32_t func32(uint32_t);
+uint64_t func64(uint64_t);
+uint128_t func128(uint128_t);
+```
+
 ## Support
 
-Currenty bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced in a `uintN_t` format, where `N` is the width.
+Currently bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced in a `uintN_t` format, where `N` is the width.
 
 ### Extending
 
