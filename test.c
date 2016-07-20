@@ -10,7 +10,7 @@
 #include "bittest/test_suite.h"
 
 int main(void) {
-      init_suite(DISPLAY_DIFF_OFF);
+      init_suite(DISPLAY_DIFF_ON);
 
       test_pop();
       test_par();
@@ -37,7 +37,7 @@ int main(void) {
       test_depr();
       test_grp();
 
-      // test_omflip();
+      test_omflip();
       test_bfly();
       // test_benes();
 

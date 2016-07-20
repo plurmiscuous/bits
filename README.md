@@ -11,7 +11,22 @@ The two primary files are `bits.c` and the accompanying `bits.h`. The files in t
 
 ## Support
 
-Currenty bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced in a `uintN_t` format, where `N` is the width. Once support is provided by the compiler, modify `inc/template.h` with the proper width in the `TEMPLATE_STD` macro. If the new width is a perfect square, add it to the `TEMPLATE_SQR` macro as well. Additions will also be needed in any `TEMPLATE_STD_TEST*` or `TEMPLATE_SQR_TEST*` macros contained in `bittest/test_funcs.c`. Appropriate `typedef`s should be placed in `inc/extint.h`.
+Currenty bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced in a `uintN_t` format, where `N` is the width.
+
+### Extending
+
+Once support is provided by the compiler, the following must be modified for the new bit-widths:
++ `bits.h`:
+..* an entry in `enum LOGS`
+..* `#define BITSN (1 << LOGN)`
+..* mask values and LFSR taps
++ `inc/extint.h`:
+..* appropriate `typedef`(s) for the `uintN_t` type(s)
++ `inc/template.h`:
+..* the `TEMPLATE_STD` and `TEMPLATE_ALL` macros
+..* the `TEMPLATE_SQR` macro, if `N` is a perfect square
++ `bittest/test_funcs.c`:
+..* any `TEMPLATE_STD_TEST*` or `TEMPLATE_SQR_TEST*` macros
 
 ## Testing
 

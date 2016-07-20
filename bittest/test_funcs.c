@@ -51,7 +51,7 @@
     {                                                                          \
         init_width(N);
 
-#define TEST_IMPL_FOOT()                                                       \
+#define TEST_IMPL_FOOT                                                         \
         term_width();                                                          \
     }
 
@@ -136,10 +136,10 @@
         FOREACH_RAND_CASE(N)                                                   \
             CHECK_CALC(N, func)                                                \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_CALC(name, func)                                                  \
-    TEST_COMMON(TEST_CALC_IMPL, name, func)
+#define TEST_CALC(func)                                                  \
+    TEST_COMMON(TEST_CALC_IMPL, #func, func)
 
 #define TEST_CALC_PAIR_IMPL(N, func)                                           \
     TEST_IMPL_HEAD(N)                                                          \
@@ -159,10 +159,10 @@
                 CHECK_CALC_PAIR(N, func)                                       \
             END_FOREACH                                                        \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_CALC_PAIR(name, func)                                             \
-    TEST_COMMON(TEST_CALC_PAIR_IMPL, name, func)
+#define TEST_CALC_PAIR(func)                                             \
+    TEST_COMMON(TEST_CALC_PAIR_IMPL, #func, func)
 
 #define TEST_PERM_INV_IMPL(N, func, ifunc)                                     \
     TEST_IMPL_HEAD(N)                                                          \
@@ -179,10 +179,10 @@
             CHECK_PERM(N, func)                                                \
             CHECK_PERM_INV(N, func, ifunc)                                     \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_PERM_INV(name, func, ifunc)                                       \
-    TEST_COMMON_INV(TEST_PERM_INV_IMPL, name, func, ifunc)
+#define TEST_PERM_INV(func, ifunc)                                       \
+    TEST_COMMON_INV(TEST_PERM_INV_IMPL, #func, func, ifunc)
 
 #define TEST_PERM_MASK_INV_IMPL(N, func, ifunc)                                \
     TEST_IMPL_HEAD(N)                                                          \
@@ -205,10 +205,10 @@
                 CHECK_PERM_MASK_INV(N, func, ifunc)                            \
             END_FOREACH                                                        \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_PERM_MASK_INV(name, func, ifunc)                                  \
-    TEST_COMMON_INV(TEST_PERM_MASK_INV_IMPL, name, func, ifunc)
+#define TEST_PERM_MASK_INV(func, ifunc)                                  \
+    TEST_COMMON_INV(TEST_PERM_MASK_INV_IMPL, #func, func, ifunc)
 
 #define TEST_MANI_MASK_IMPL(N, func)                                           \
     TEST_IMPL_HEAD(N)                                                          \
@@ -228,10 +228,10 @@
                 CHECK_MANI_MASK(N, func)                                       \
             END_FOREACH                                                        \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_MANI_MASK(name, func)                                             \
-    TEST_COMMON(TEST_MANI_MASK_IMPL, name, func)
+#define TEST_MANI_MASK(func)                                             \
+    TEST_COMMON(TEST_MANI_MASK_IMPL, #func, func)
 
 #define TEST_MANI_MASK_INV_IMPL(N, func, ifunc)                                \
     TEST_IMPL_HEAD(N)                                                          \
@@ -254,17 +254,17 @@
                 CHECK_MANI_MASK_INV(N, func, ifunc)                            \
             END_FOREACH                                                        \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-#define TEST_MANI_MASK_INV(name, func, ifunc)                                  \
-    TEST_COMMON_INV(TEST_MANI_MASK_INV_IMPL, name, func, ifunc)
+#define TEST_MANI_MASK_INV(func, ifunc)                                  \
+    TEST_COMMON_INV(TEST_MANI_MASK_INV_IMPL, #func, func, ifunc)
 
-#define TEST_PERM_CUSTOM(name, func, IMPL)                                          \
-    TEST_FUNC_HEAD(name, func)                                                 \
+#define TEST_CUSTOM(func, IMPL)                                          \
+    TEST_FUNC_HEAD(#func, func)                                                 \
         TEMPLATE_STD_TEST(IMPL, func)                                          \
     TEST_FUNC_FOOT()
 
-#define TEST_TRANS_IMPL(N, func)                                               \
+#define TEST_TRANS_PERM(N, func)                                               \
     TEST_IMPL_HEAD(N)                                                          \
         uint##N##_t test_case, expect, actual, invert;                         \
         FOREACH_TEST_CASE(N)                                                   \
@@ -309,29 +309,53 @@
                 check##N##_inv(#func, #func, test_case, invert);               \
             }                                                                  \
         END_FOREACH                                                            \
-    TEST_IMPL_FOOT()
+    TEST_IMPL_FOOT
 
-TEST_CALC("pop", pop)
-TEST_CALC("par", par)
-TEST_CALC("ctz", ctz)
-TEST_CALC("clz", clz)
-TEST_CALC("mxset", mxset)
-TEST_CALC("mnset", mnset)
-TEST_CALC("lb", lb)
-TEST_CALC("ipow", ipow)
-TEST_CALC("cpow", cpow)
-TEST_CALC("fpow", fpow)
-TEST_CALC("lsb", lsb)
-TEST_CALC("msb", msb)
-TEST_CALC_PAIR("max", max)
-TEST_CALC_PAIR("min", min)
-TEST_CALC_PAIR("gcd", gcd)
-TEST_PERM_INV("rev", rev, rev)
-TEST_PERM_INV("shuf", shuf, ishuf)
-TEST_PERM_MASK_INV("bfly", bfly, ibfly)
-TEST_MANI_MASK("extr", extr)
-TEST_MANI_MASK("depl", depl)
-TEST_MANI_MASK("extl", extl)
-TEST_MANI_MASK("depr", depr)
-TEST_PERM_MASK_INV("grp", grp, igrp)
-TEST_PERM_CUSTOM("trans", trans, TEST_TRANS_IMPL)
+#define TEST_OMFLIP_PERM(N, func)                                                                                      \
+    TEST_IMPL_HEAD(N)                                                                                                  \
+        uint##N##_t test_case, actual, invert, expect;                                                                 \
+        uint##N##_t test_mask, mirror_mask;                                                                            \
+        uint##N##_t flip_mask = NEG##N >> (BITS##N >> 1);                                                              \
+        FOREACH_TEST_CASE(N)                                                                                           \
+            FOREACH_TEST_MASK(N)                                                                                       \
+                for (uint8_t ctrl = 0; ctrl < 4; ++ctrl) {                                                             \
+                    mirror_mask = (test_mask & flip_mask) | ((test_mask & flip_mask) << (BITS##N >> 1));               \
+                    actual = omflip##N(test_case, mirror_mask, ctrl);                                                  \
+                    check##N##_perm_assert("omflip", test_case, actual);                                               \
+                                                                                                                       \
+                    expect = expect_omflip##N(test_case, mirror_mask, ctrl);                                           \
+                    check##N##_impl("omflip", test_case, expect, actual);                                              \
+                                                                                                                       \
+                    invert = omflip##N(actual, mirror_mask, ~ctrl);                                                    \
+                    check##N##_perm_assert("omflip", actual, invert);                                                  \
+                    check##N##_inv("omflip", "omflip", test_case, invert);                                             \
+                }                                                                                                      \
+            END_FOREACH                                                                                                \
+        END_FOREACH                                                                                                    \
+    TEST_IMPL_FOOT
+
+TEST_CALC(pop)
+TEST_CALC(par)
+TEST_CALC(ctz)
+TEST_CALC(clz)
+TEST_CALC(mxset)
+TEST_CALC(mnset)
+TEST_CALC(lb)
+TEST_CALC(ipow)
+TEST_CALC(cpow)
+TEST_CALC(fpow)
+TEST_CALC(lsb)
+TEST_CALC(msb)
+TEST_CALC_PAIR(max)
+TEST_CALC_PAIR(min)
+TEST_CALC_PAIR(gcd)
+TEST_PERM_INV(rev, rev)
+TEST_PERM_INV(shuf, ishuf)
+TEST_PERM_MASK_INV(bfly, ibfly)
+TEST_MANI_MASK(extr)
+TEST_MANI_MASK(depl)
+TEST_MANI_MASK(extl)
+TEST_MANI_MASK(depr)
+TEST_PERM_MASK_INV(grp, igrp)
+TEST_CUSTOM(trans, TEST_TRANS_PERM)
+TEST_CUSTOM(omflip, TEST_OMFLIP_PERM)

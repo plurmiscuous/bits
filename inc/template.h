@@ -27,7 +27,10 @@
         }
 */
 
-#define TEMPLATE_STD(T)   T(8) T(16) T(32) T(64) T(128)
-#define TEMPLATE_SQR(T)   T(4) T(16) T(64)
+#define TEMPLATE_STD(T)     T(8) T(16) T(32) T(64) T(128)
+#define TEMPLATE_SQR(T)     T(4) T(16) T(64)
+
+// #define TEMPLATE_ALL(T)   T(1) T(2) T(4) T(8) T(16) T(32) T(64) T(128)
+// #define TEMPLATE_LOG(T)   T(3) T(4) T(5) T(6) T(7)
 
 #endif // _TEMPLATE_H_
