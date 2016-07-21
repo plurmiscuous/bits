@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <assert.h>
 
 #include "test_expect.h"
 
@@ -390,16 +390,61 @@ TEMPLATE_STD(EXPECT_DEPR_IMPL)
     }
 TEMPLATE_STD(EXPECT_DEPL_IMPL)
 
-#define EXPECT_TRANS_IMPL(N)                                                    \
-    uint##N##_t expect_trans##N(uint##N##_t bits, int rows) {                   \
-        int cols = N / rows;                                                    \
-        for(int i = 0; i < rows * cols; i++) {                                  \
-            int j = i;                                                          \
-            do                                                                  \
-                j = (j % rows) * cols + (j / rows);                             \
-            while(j < i);                                                       \
-            bits = bswap##N(bits, i, j);                                        \
-        }                                                                       \
-        return bits;                                                            \
+#define EXPECT_TRANS_IMPL(N)                                                                       \
+    uint##N##_t expect_trans##N(uint##N##_t bits, int rows) {                                      \
+        int cols = N / rows;                                                                       \
+        for(int i = 0; i < rows * cols; i++) {                                                     \
+            int j = i;                                                                             \
+            do                                                                                     \
+                j = (j % rows) * cols + (j / rows);                                                \
+            while(j < i);                                                                          \
+            bits = bswap##N(bits, i, j);                                                           \
+        }                                                                                          \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(EXPECT_TRANS_IMPL)
+
+#define EXPECT_ROL_IMPL(N)                                                                         \
+    uint##N##_t expect_rol##N(uint##N##_t bits, int rot) {                                         \
+        for (int i = rot; i--;)                                                                    \
+            bits = (bits << 1) | (bits >> (N - 1));                                                \
+        return bits;                                                                               \
+    }
+TEMPLATE_STD(EXPECT_ROL_IMPL)
+
+#define EXPECT_ROR_IMPL(N)                                                                         \
+    uint##N##_t expect_ror##N(uint##N##_t bits, int rot) {                                         \
+        for (int i = rot; i--;)                                                                    \
+            bits = (bits >> 1) | (bits << (N - 1));                                                \
+        return bits;                                                                               \
+    }
+TEMPLATE_STD(EXPECT_ROR_IMPL)
+
+#define EXPECT_BSWAP_IMPL(N)                                                                       \
+    uint##N##_t expect_bswap##N(uint##N##_t bits, int i, int j) {                                  \
+        assert(0 <= i && i < N);                                                                   \
+        assert(0 <= j && j < N);                                                                   \
+        uint##N##_t biti = (bits >> i) & 0x1;                                                      \
+        uint##N##_t bitj = (bits >> j) & 0x1;                                                      \
+        bits &= ~((ONE##N << i) | (ONE##N << j));                                                  \
+        bits |= (biti << j) | (bitj << i);                                                         \
+        return bits;                                                                               \
+    }
+TEMPLATE_STD(EXPECT_BSWAP_IMPL)
+
+#define EXPECT_RSWAP_IMPL(N)                                                                       \
+    uint##N##_t expect_rswap##N(uint##N##_t bits, int i, int j, int len) {                         \
+        assert(0 <= i && i < BITS##N);                                                             \
+        assert(0 <= j && j < BITS##N);                                                             \
+        assert(0 <= len && i + len <= BITS##N && j + len <= BITS##N);                              \
+        assert(i + len < j || i < j + len);                                                        \
+        uint##N##_t mask = (ONE##N << len) - 1;                                                    \
+        uint##N##_t ri = (bits >> i) & mask;                                                       \
+        uint##N##_t rj = (bits >> j) & mask;                                                       \
+        bits &= ~((mask << i) | (mask << j));                                                      \
+        bits |= (ri << j) | (rj << i);                                                             \
+        return bits;                                                                               \
+    }
+TEMPLATE_STD(EXPECT_RSWAP_IMPL)
+
+

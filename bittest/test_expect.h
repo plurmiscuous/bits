@@ -22,6 +22,10 @@
     uint##N##_t expect_fpow##N(uint##N##_t bits);                                                  \
     uint##N##_t expect_lsb##N(uint##N##_t bits);                                                   \
     uint##N##_t expect_msb##N(uint##N##_t bits);                                                   \
+    uint##N##_t expect_rol##N(uint##N##_t bits, int rot);                                          \
+    uint##N##_t expect_ror##N(uint##N##_t bits, int rot);                                          \
+    uint##N##_t expect_bswap##N(uint##N##_t bits, int i, int j);                                   \
+    uint##N##_t expect_rswap##N(uint##N##_t bits, int i, int j, int len);                          \
     uint##N##_t expect_rev##N(uint##N##_t bits);                                                   \
     uint##N##_t expect_shuf##N(uint##N##_t bits);                                                  \
     uint##N##_t expect_ishuf##N(uint##N##_t bits);                                                 \

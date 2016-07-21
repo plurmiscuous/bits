@@ -81,7 +81,11 @@ static int suite_errors;
 static int prev_test_errors;
 static int prev_width_errors;
 static void error(void) {
-    suite_errors++;
+    ++suite_errors;
+}
+static int test_counter;
+static void test_count() {
+    ++test_counter;
 }
 
 static char* test_name; // remove this if never used outside init_test()
@@ -95,21 +99,22 @@ void init_suite(int output_diff) {
         rand_init = true;
     }
 
+    setbuf(stdout, NULL);
+
     no_init_suite_check();
     alloc_test_values();
     suite_init = true;
 
     print_diff = output_diff;
-    suite_errors = prev_test_errors = prev_width_errors = 0;
+    suite_errors = prev_test_errors = prev_width_errors = test_counter = 0;
     test_name = NULL;
     test_init = 0;
 
-#define WIDTHS_FMT(N) " %3d   "
-#define WIDTHS_INT(N) , N
-
+    #define WIDTHS_FMT(N) " %3d   "
+    #define WIDTHS_INT(N) , N
     printf("testing libbits\n");
     printf("             " TEMPLATE_STD(WIDTHS_FMT) "\n" TEMPLATE_STD(WIDTHS_INT));
-#define BORDER_HYPHENS(N) "-------"
+    #define BORDER_HYPHENS(N) "-------"
     printf("          +-" TEMPLATE_STD(BORDER_HYPHENS) "-+\n");
 }
 
@@ -153,9 +158,9 @@ void term_suite(void) {
     free_test_values();
     suite_init = false;
 
-#define BORDER_SPACES(N) "       "
     printf("          +-" TEMPLATE_STD(BORDER_HYPHENS) "-+\n");
-    printf("  " TEMPLATE_STD(BORDER_SPACES) "total errors: %d\n", suite_errors);
+    printf("             tests: %d\n", test_counter);
+    printf("            errors: %d\n", suite_errors);
 
     print_diff = suite_errors = 0;
 }
@@ -163,6 +168,7 @@ void term_suite(void) {
 #define TEST_IMPL(N)                                                                                                   \
     void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {                \
         init_test_check();                                                                                             \
+        test_count();                                                                                                  \
                                                                                                                        \
         if (expected != actual) {                                                                                      \
             if (print_diff) {                                                                                          \
@@ -177,6 +183,7 @@ void term_suite(void) {
                                                                                                                        \
     void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual) {                      \
         init_test_check();                                                                                             \
+        test_count();                                                                                                  \
                                                                                                                        \
         if (input != actual) {                                                                                         \
             if (print_diff) {                                                                                          \
@@ -190,6 +197,7 @@ void term_suite(void) {
                                                                                                                        \
     void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output) {                               \
         init_test_check();                                                                                             \
+        test_count();                                                                                                  \
                                                                                                                        \
         int ipop = expect_pop##N(input);                                                                               \
         int opop = expect_pop##N(output);                                                                              \

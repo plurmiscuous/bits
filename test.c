@@ -28,6 +28,10 @@ int main(void) {
       test_lsb();
       test_msb();
 
+      test_rol();
+      test_ror();
+      test_bswap();
+      test_rswap();
       test_rev();
       test_shuf();
 

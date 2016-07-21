@@ -254,10 +254,10 @@ TEMPLATE_STD(MSB_IMPL)
 //     uint rolN(uint bits, int rot) {
 //         return (bits << rot) | (bits >> (BITS - rot));
 //     }
-#define ROL_IMPL(N)                                         \
-    uint##N##_t rol##N(uint##N##_t bits, int rot) {         \
-        assert(0 <= rot && rot < BITS##N);                  \
-        return (bits << rot) | (bits >> (BITS##N - rot));   \
+#define ROL_IMPL(N)                                                                                \
+    uint##N##_t rol##N(uint##N##_t bits, int rot) {                                                \
+        assert(0 <= rot && rot < BITS##N);                                                         \
+        return (bits << rot) | (bits >> (BITS##N - rot));                                          \
     }
 TEMPLATE_STD(ROL_IMPL)
 
@@ -265,10 +265,10 @@ TEMPLATE_STD(ROL_IMPL)
 //     uint rorN(uint bits, int rot) {
 //         return (bits << (BITS - rot)) | (bits >> rot);
 //     }
-#define ROR_IMPL(N)                                         \
-    uint##N##_t ror##N(uint##N##_t bits, int rot) {         \
-        assert(0 <= rot && rot < BITS##N);                  \
-        return (bits << (BITS##N - rot)) | (bits >> rot);   \
+#define ROR_IMPL(N)                                                                                \
+    uint##N##_t ror##N(uint##N##_t bits, int rot) {                                                \
+        assert(0 <= rot && rot < BITS##N);                                                         \
+        return (bits << (BITS##N - rot)) | (bits >> rot);                                          \
     }
 TEMPLATE_STD(ROR_IMPL)
 
@@ -277,12 +277,12 @@ TEMPLATE_STD(ROR_IMPL)
 //         uint tmp = (bits ^ (bits >> shift)) & mask;
 //         return bits ^ tmp ^ (tmp << shift);;
 //     }
-#define DELTA_IMPL(N)                                                       \
-    uint##N##_t delta##N(uint##N##_t bits, uint##N##_t mask, int delta) {   \
-        assert(0 <= delta && delta < BITS##N);                              \
-        uint##N##_t tmp = (bits ^ (bits >> delta)) & mask;                  \
-        bits ^= tmp ^ (tmp << delta);                                       \
-        return bits;                                                        \
+#define DELTA_IMPL(N)                                                                              \
+    uint##N##_t delta##N(uint##N##_t bits, uint##N##_t mask, int delta) {                          \
+        assert(0 <= delta && delta < BITS##N);                                                     \
+        uint##N##_t tmp = (bits ^ (bits >> delta)) & mask;                                         \
+        bits ^= tmp ^ (tmp << delta);                                                              \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(DELTA_IMPL)
 
@@ -291,12 +291,12 @@ TEMPLATE_STD(DELTA_IMPL)
     //     uint tmp = ((bits >> i) ^ (bits >> j)) & 1;
     //     return bits ^ ((tmp << i) | (tmp << j));
     // }
-#define BSWAP_IMPL(N)                                       \
-    uint##N##_t bswap##N(uint##N##_t bits, int i, int j) {  \
-        assert(0 <= i && i < BITS##N);                      \
-        assert(0 <= j && j < BITS##N);                      \
-        uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & 1;  \
-        return bits ^ ((tmp << i) | (tmp << j));            \
+#define BSWAP_IMPL(N)                                                                              \
+    uint##N##_t bswap##N(uint##N##_t bits, int i, int j) {                                         \
+        assert(0 <= i && i < BITS##N);                                                             \
+        assert(0 <= j && j < BITS##N);                                                             \
+        uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & 1;                                         \
+        return bits ^ ((tmp << i) | (tmp << j));                                                   \
     }
 TEMPLATE_STD(BSWAP_IMPL)
 
@@ -305,12 +305,14 @@ TEMPLATE_STD(BSWAP_IMPL)
 //         uint tmp = ((bits >> i) ^ (bits >> j)) & ((ONE << len) - 1);
 //         return bits ^ ((tmp << i) | (tmp << j));
 //     }
-#define RSWAP_IMPL(N)                                                           \
-    uint##N##_t rswap##N(uint##N##_t bits, int i, int j, int len) {             \
-        assert(i < BITS##N && i + len <= BITS##N);                              \
-        assert(j < BITS##N && j + len <= BITS##N);                              \
-        uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & ((ONE##N << len) - 1);  \
-        return bits ^ ((tmp << i) | (tmp << j));                                \
+#define RSWAP_IMPL(N)                                                                              \
+    uint##N##_t rswap##N(uint##N##_t bits, int i, int j, int len) {                                \
+        assert(0 <= len && len <= BITS##N);                                                        \
+        assert(0 <= i && i < BITS##N && i + len <= BITS##N);                                       \
+        assert(0 <= j && j < BITS##N && j + len <= BITS##N);                                       \
+        assert(i + len < j || i < j + len);                                                        \
+        uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & ((ONE##N << len) - 1);                     \
+        return bits ^ ((tmp << i) | (tmp << j));                                                   \
     }
 TEMPLATE_STD(RSWAP_IMPL)
 
@@ -320,11 +322,11 @@ TEMPLATE_STD(RSWAP_IMPL)
 //             bits = (bits & WORD[i]) << (1 << i) | (bits & ~WORD[i]) >> (1 << i);
 //         return bits;
 //     }
-#define REV_IMPL(N)                                                                     \
-    uint##N##_t rev##N(uint##N##_t bits) {                                              \
-        for (int i = 0; i < LOG##N; ++i)                                                \
-            bits = (bits & WORD##N[i]) << (1 << i) | (bits & ~WORD##N[i]) >> (1 << i);  \
-        return bits;                                                                    \
+#define REV_IMPL(N)                                                                                \
+    uint##N##_t rev##N(uint##N##_t bits) {                                                         \
+        for (int i = 0; i < LOG##N; ++i)                                                           \
+            bits = (bits & WORD##N[i]) << (1 << i) | (bits & ~WORD##N[i]) >> (1 << i);             \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(REV_IMPL)
 
@@ -334,11 +336,11 @@ TEMPLATE_STD(REV_IMPL)
 //             bits = deltaN(bits, SHUF[i], 1 << i);
 //         return bits;
 //     }
-#define SHUF_IMPL(N)                                    \
-    uint##N##_t shuf##N(uint##N##_t bits) {             \
-        for (int i = LOG##N - 1; i-- != 0;)             \
-            bits = delta##N(bits, SHUF##N[i], 1 << i);  \
-        return bits;                                    \
+#define SHUF_IMPL(N)                                                                               \
+    uint##N##_t shuf##N(uint##N##_t bits) {                                                        \
+        for (int i = LOG##N - 1; i-- != 0;)                                                        \
+            bits = delta##N(bits, SHUF##N[i], 1 << i);                                             \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(SHUF_IMPL)
 
@@ -348,11 +350,11 @@ TEMPLATE_STD(SHUF_IMPL)
 //             bits = deltaN(bits, SHUF[i], 1 << i);
 //         return bits;
 //     }
-#define ISHUF_IMPL(N)                                   \
-    uint##N##_t ishuf##N(uint##N##_t bits) {            \
-        for (int i = 0; i < LOG##N - 1; ++i)            \
-            bits = delta##N(bits, SHUF##N[i], 1 << i);  \
-        return bits;                                    \
+#define ISHUF_IMPL(N)                                                                              \
+    uint##N##_t ishuf##N(uint##N##_t bits) {                                                       \
+        for (int i = 0; i < LOG##N - 1; ++i)                                                       \
+            bits = delta##N(bits, SHUF##N[i], 1 << i);                                             \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(ISHUF_IMPL)
 
@@ -370,19 +372,19 @@ TEMPLATE_STD(ISHUF_IMPL)
 //         }
 //         return bits;
 //     }
-#define OMFLIP_IMPL(N)                                                            \
-    uint##N##_t omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {     \
-        for (int i = 0; i < 2; ++i) {                                             \
-            uint##N##_t m = (mask >> (i * (BITS##N >> 1))) & WORD##N[LOG##N - 1]; \
-            if (((opts >> i) & 0x1) == 0) {                                       \
-                bits = delta##N(bits, m, BITS##N >> 1);                           \
-                bits = shuf##N(bits);                                             \
-            } else {                                                              \
-                bits = ishuf##N(bits);                                            \
-                bits = delta##N(bits, m, BITS##N >> 1);                           \
-            }                                                                     \
-        }                                                                         \
-        return bits;                                                              \
+#define OMFLIP_IMPL(N)                                                                             \
+    uint##N##_t omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {                      \
+        for (int i = 0; i < 2; ++i) {                                                              \
+            uint##N##_t m = (mask >> (i * (BITS##N >> 1))) & WORD##N[LOG##N - 1];                  \
+            if (((opts >> i) & 0x1) == 0) {                                                        \
+                bits = delta##N(bits, m, BITS##N >> 1);                                            \
+                bits = shuf##N(bits);                                                              \
+            } else {                                                                               \
+                bits = ishuf##N(bits);                                                             \
+                bits = delta##N(bits, m, BITS##N >> 1);                                            \
+            }                                                                                      \
+        }                                                                                          \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(OMFLIP_IMPL)
 
@@ -392,11 +394,11 @@ TEMPLATE_STD(OMFLIP_IMPL)
 //             bits = deltaN(bits, mask & WORD[i], 1 << i);
 //         return bits;
 //     }
-#define BFLY_IMPL(N)                                            \
-    uint##N##_t bfly##N(uint##N##_t bits, uint##N##_t mask) {   \
-        for (int i = LOG##N; i-- != 0;)                         \
-            bits = delta##N(bits, mask & WORD##N[i], 1 << i);   \
-        return bits;                                            \
+#define BFLY_IMPL(N)                                                                               \
+    uint##N##_t bfly##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        for (int i = LOG##N; i-- != 0;)                                                            \
+            bits = delta##N(bits, mask & WORD##N[i], 1 << i);                                      \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(BFLY_IMPL)
 
@@ -406,11 +408,11 @@ TEMPLATE_STD(BFLY_IMPL)
 //             bits = deltaN(bits, mask & WORD[i], 1 << i);
 //         return bits;
 //     }
-#define IBFLY_IMPL(N)                                           \
-    uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask) {  \
-        for (int i = 0; i < LOG##N; ++i)                        \
-            bits = delta##N(bits, mask & WORD##N[i], 1 << i);   \
-        return bits;                                            \
+#define IBFLY_IMPL(N)                                                                              \
+    uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask) {                                     \
+        for (int i = 0; i < LOG##N; ++i)                                                           \
+            bits = delta##N(bits, mask & WORD##N[i], 1 << i);                                      \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(IBFLY_IMPL)
 
@@ -420,13 +422,13 @@ TEMPLATE_STD(IBFLY_IMPL)
 //         bits = deltaN(bits, mask & WORD[log2], 1 << log2);
 //         return bits;
 //     }
-#define BENES_IMPL(N)                                                               \
-    uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2) {  \
-        assert(0 <= log1 && log1 < LOG##N);                                         \
-        assert(0 <= log2 && log2 < LOG##N);                                         \
-        bits = delta##N(bits, mask & WORD##N[log1], 1 << log1);                     \
-        bits = delta##N(bits, mask & WORD##N[log2], 1 << log2);                     \
-        return bits;                                                                \
+#define BENES_IMPL(N)                                                                              \
+    uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2) {                 \
+        assert(0 <= log1 && log1 < LOG##N);                                                        \
+        assert(0 <= log2 && log2 < LOG##N);                                                        \
+        bits = delta##N(bits, mask & WORD##N[log1], 1 << log1);                                    \
+        bits = delta##N(bits, mask & WORD##N[log2], 1 << log2);                                    \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(BENES_IMPL)
 
@@ -482,10 +484,10 @@ TEMPLATE_STD(TRANS_IMPL)
 //         bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPSN);
 //         return bits;
 //     }
-#define LFSR_IMPL(N)                                        \
-    uint##N##_t lfsr##N(uint##N##_t bits) {                 \
-        bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPS##N);  \
-        return bits;                                        \
+#define LFSR_IMPL(N)                                                                               \
+    uint##N##_t lfsr##N(uint##N##_t bits) {                                                        \
+        bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPS##N);                                         \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(LFSR_IMPL)
 
@@ -494,10 +496,10 @@ TEMPLATE_STD(LFSR_IMPL)
 //         bits = (bits << 1) ^ (-(bits >> (BITS - 1)) & RTAPSN);
 //         return bits;
 //     }
-#define ILFSR_IMPL(N)                                               \
-    uint##N##_t ilfsr##N(uint##N##_t bits) {                        \
-        bits = (bits << 1) ^ (-(bits >> (BITS##N - 1)) & RTAPS##N); \
-        return bits;                                                \
+#define ILFSR_IMPL(N)                                                                              \
+    uint##N##_t ilfsr##N(uint##N##_t bits) {                                                       \
+        bits = (bits << 1) ^ (-(bits >> (BITS##N - 1)) & RTAPS##N);                                \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(ILFSR_IMPL)
 
@@ -505,9 +507,9 @@ TEMPLATE_STD(ILFSR_IMPL)
 //     uint ternN(uint xbits, uint ybits, uint mask) {
 //         return (mask & (xbits ^ ybits)) ^ ybits;
 //     }
-#define TERN_IMPL(N)                                                                \
-    uint##N##_t tern##N(uint##N##_t xbits, uint##N##_t ybits, uint##N##_t mask) {   \
-        return (mask & (xbits ^ ybits)) ^ ybits;                                    \
+#define TERN_IMPL(N)                                                                               \
+    uint##N##_t tern##N(uint##N##_t xbits, uint##N##_t ybits, uint##N##_t mask) {                  \
+        return (mask & (xbits ^ ybits)) ^ ybits;                                                   \
     }
 TEMPLATE_STD(TERN_IMPL)
 
@@ -515,9 +517,9 @@ TEMPLATE_STD(TERN_IMPL)
 //     uint grayN(uint bits) {
 //         return bits ^ (bits >> 1);
 //     }
-#define GRAY_IMPL(N)                        \
-    uint##N##_t gray##N(uint##N##_t bits) { \
-        return bits ^ (bits >> 1);          \
+#define GRAY_IMPL(N)                                                                               \
+    uint##N##_t gray##N(uint##N##_t bits) {                                                        \
+        return bits ^ (bits >> 1);                                                                 \
     }
 TEMPLATE_STD(GRAY_IMPL)
 
@@ -527,11 +529,11 @@ TEMPLATE_STD(GRAY_IMPL)
 //             bits ^= bits >> i;
 //         return bits;
 //     }
-#define IGRAY_IMPL(N)                           \
-    uint##N##_t igray##N(uint##N##_t bits) {    \
-        for (int i = 1; i < BITS##N; i <<= 1)   \
-            bits ^= bits >> i;                  \
-        return bits;                            \
+#define IGRAY_IMPL(N)                                                                              \
+    uint##N##_t igray##N(uint##N##_t bits) {                                                       \
+        for (int i = 1; i < BITS##N; i <<= 1)                                                      \
+            bits ^= bits >> i;                                                                     \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(IGRAY_IMPL)
 
@@ -555,25 +557,25 @@ TEMPLATE_STD(IGRAY_IMPL)
 //
 //         return bits;
 //     }
-#define EXTL_IMPL(N)                                            \
-    uint##N##_t extl##N(uint##N##_t bits, uint##N##_t mask) {   \
-        bits &= mask;                                           \
-        uint##N##_t m1 = (uint##N##_t) ~mask >> 1;              \
-                                                                \
-        for (int i = 0; i < LOG##N; ++i) {                      \
-            uint##N##_t m = m1;                                 \
-            for (int j = 1; j < BITS##N; j <<= 1)               \
-                m ^= (m >> j);                                  \
-                                                                \
-            uint##N##_t mv = m & mask;                          \
-            mask = (mask ^ mv) | (mv << (ONE##N << i));         \
-                                                                \
-            uint##N##_t mt = bits & mv;                         \
-            bits = (bits ^ mt) | (mt << (ONE##N << i));         \
-            m1 &= ~m;                                           \
-        }                                                       \
-                                                                \
-        return bits;                                            \
+#define EXTL_IMPL(N)                                                                               \
+    uint##N##_t extl##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        bits &= mask;                                                                              \
+        uint##N##_t m1 = (uint##N##_t) ~mask >> 1;                                                 \
+                                                                                                   \
+        for (int i = 0; i < LOG##N; ++i) {                                                         \
+            uint##N##_t m = m1;                                                                    \
+            for (int j = 1; j < BITS##N; j <<= 1)                                                  \
+                m ^= (m >> j);                                                                     \
+                                                                                                   \
+            uint##N##_t mv = m & mask;                                                             \
+            mask = (mask ^ mv) | (mv << (ONE##N << i));                                            \
+                                                                                                   \
+            uint##N##_t mt = bits & mv;                                                            \
+            bits = (bits ^ mt) | (mt << (ONE##N << i));                                            \
+            m1 &= ~m;                                                                              \
+        }                                                                                          \
+                                                                                                   \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(EXTL_IMPL)
 
@@ -597,25 +599,25 @@ TEMPLATE_STD(EXTL_IMPL)
 //
 //         return bits;
 //     }
-#define EXTR_IMPL(N)                                            \
-    uint##N##_t extr##N(uint##N##_t bits, uint##N##_t mask) {   \
-        bits &= mask;                                           \
-        uint##N##_t m1 = ~mask << 1;                            \
-                                                                \
-        for (int i = 0; i < LOG##N; ++i) {                      \
-            uint##N##_t m = m1;                                 \
-            for (int j = 1; j < BITS##N; j <<= 1)               \
-                m ^= (m << j);                                  \
-                                                                \
-            uint##N##_t mv = m & mask;                          \
-            mask = (mask ^ mv) | (mv >> (ONE##N << i));         \
-                                                                \
-            uint##N##_t mt = bits & mv;                         \
-            bits = (bits ^ mt) | (mt >> (ONE##N << i));         \
-            m1 &= ~m;                                           \
-        }                                                       \
-                                                                \
-        return bits;                                            \
+#define EXTR_IMPL(N)                                                                               \
+    uint##N##_t extr##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        bits &= mask;                                                                              \
+        uint##N##_t m1 = ~mask << 1;                                                               \
+                                                                                                   \
+        for (int i = 0; i < LOG##N; ++i) {                                                         \
+            uint##N##_t m = m1;                                                                    \
+            for (int j = 1; j < BITS##N; j <<= 1)                                                  \
+                m ^= (m << j);                                                                     \
+                                                                                                   \
+            uint##N##_t mv = m & mask;                                                             \
+            mask = (mask ^ mv) | (mv >> (ONE##N << i));                                            \
+                                                                                                   \
+            uint##N##_t mt = bits & mv;                                                            \
+            bits = (bits ^ mt) | (mt >> (ONE##N << i));                                            \
+            m1 &= ~m;                                                                              \
+        }                                                                                          \
+                                                                                                   \
+        return bits;                                                                               \
     }
 TEMPLATE_STD(EXTR_IMPL)
 
@@ -640,26 +642,26 @@ TEMPLATE_STD(EXTR_IMPL)
 //
 //         return bits & m0;
 //     }
-#define DEPL_IMPL(N)                                                            \
-    uint##N##_t depl##N(uint##N##_t bits, uint##N##_t mask) {                   \
-        uint##N##_t masks[LOG##N];                                              \
-        uint##N##_t m0 = mask;                                                  \
-        uint##N##_t m1 = ~mask << 1;                                            \
-                                                                                \
-        for (int i = 0; i < LOG##N; ++i) {                                      \
-            uint##N##_t m = m1;                                                 \
-            for (int j = 1; j < BITS##N; j <<= 1)                               \
-                m ^= (m << j);                                                  \
-                                                                                \
-            masks[i] = m & mask;                                                \
-            mask = (mask ^ masks[i]) | (masks[i] >> (ONE##N << i));             \
-            m1 &= ~m;                                                           \
-        }                                                                       \
-                                                                                \
-        for (int i = LOG##N; i-- != 0;)                                          \
-            bits ^= ((bits ^ (bits << (ONE##N << i))) & masks[i]);              \
-                                                                                \
-        return bits & m0;                                                       \
+#define DEPL_IMPL(N)                                                                               \
+    uint##N##_t depl##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        uint##N##_t masks[LOG##N];                                                                 \
+        uint##N##_t m0 = mask;                                                                     \
+        uint##N##_t m1 = ~mask << 1;                                                               \
+                                                                                                   \
+        for (int i = 0; i < LOG##N; ++i) {                                                         \
+            uint##N##_t m = m1;                                                                    \
+            for (int j = 1; j < BITS##N; j <<= 1)                                                  \
+                m ^= (m << j);                                                                     \
+                                                                                                   \
+            masks[i] = m & mask;                                                                   \
+            mask = (mask ^ masks[i]) | (masks[i] >> (ONE##N << i));                                \
+            m1 &= ~m;                                                                              \
+        }                                                                                          \
+                                                                                                   \
+        for (int i = LOG##N; i-- != 0;)                                                            \
+            bits ^= ((bits ^ (bits << (ONE##N << i))) & masks[i]);                                 \
+                                                                                                   \
+        return bits & m0;                                                                          \
     }
 TEMPLATE_STD(DEPL_IMPL)
 
@@ -684,26 +686,26 @@ TEMPLATE_STD(DEPL_IMPL)
 //
 //         return bits & m0;
 //     }
-#define DEPR_IMPL(N)                                                            \
-    uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask) {                   \
-        uint##N##_t masks[LOG##N];                                              \
-        uint##N##_t m0 = mask;                                                  \
-        uint##N##_t m1 = (uint##N##_t) ~mask >> 1;                              \
-                                                                                \
-        for (int i = 0; i < LOG##N; ++i) {                                      \
-            uint##N##_t m = m1;                                                 \
-            for (int j = 1; j < BITS##N; j <<= 1)                               \
-                m ^= (m >> j);                                                  \
-                                                                                \
-            masks[i] = m & mask;                                                \
-            mask = (mask ^ masks[i]) | (masks[i] << (ONE##N << i));             \
-            m1 &= ~m;                                                           \
-        }                                                                       \
-                                                                                \
-        for (int i = LOG##N; i-- != 0;)                                          \
-            bits ^= (bits ^ (bits >> (ONE##N << i))) & masks[i];                \
-                                                                                \
-        return bits & m0;                                                       \
+#define DEPR_IMPL(N)                                                                               \
+    uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        uint##N##_t masks[LOG##N];                                                                 \
+        uint##N##_t m0 = mask;                                                                     \
+        uint##N##_t m1 = (uint##N##_t) ~mask >> 1;                                                 \
+                                                                                                   \
+        for (int i = 0; i < LOG##N; ++i) {                                                         \
+            uint##N##_t m = m1;                                                                    \
+            for (int j = 1; j < BITS##N; j <<= 1)                                                  \
+                m ^= (m >> j);                                                                     \
+                                                                                                   \
+            masks[i] = m & mask;                                                                   \
+            mask = (mask ^ masks[i]) | (masks[i] << (ONE##N << i));                                \
+            m1 &= ~m;                                                                              \
+        }                                                                                          \
+                                                                                                   \
+        for (int i = LOG##N; i-- != 0;)                                                            \
+            bits ^= (bits ^ (bits >> (ONE##N << i))) & masks[i];                                   \
+                                                                                                   \
+        return bits & m0;                                                                          \
     }
 TEMPLATE_STD(DEPR_IMPL)
 
@@ -711,9 +713,9 @@ TEMPLATE_STD(DEPR_IMPL)
 //     uint grpN(uint bits, uint mask) {
 //         return extrN(bits, mask) | extlN(bits, ~mask);
 //     }
-#define GRP_IMPL(N)                                             \
-    uint##N##_t grp##N(uint##N##_t bits, uint##N##_t mask) {    \
-        return extr##N(bits, mask) | extl##N(bits, ~mask);      \
+#define GRP_IMPL(N)                                                                                \
+    uint##N##_t grp##N(uint##N##_t bits, uint##N##_t mask) {                                       \
+        return extr##N(bits, mask) | extl##N(bits, ~mask);                                         \
     }
 TEMPLATE_STD(GRP_IMPL)
 
@@ -721,8 +723,8 @@ TEMPLATE_STD(GRP_IMPL)
 //     uint igrpN(uint bits, uint mask) {
 //         return deprN(bits, ~mask) | deplN(bits, mask);
 //     }
-#define IGRP_IMPL(N)                                            \
-    uint##N##_t igrp##N(uint##N##_t bits, uint##N##_t mask) {   \
-        return depr##N(bits, ~mask) | depl##N(bits, mask);      \
+#define IGRP_IMPL(N)                                                                               \
+    uint##N##_t igrp##N(uint##N##_t bits, uint##N##_t mask) {                                      \
+        return depr##N(bits, ~mask) | depl##N(bits, mask);                                         \
     }
 TEMPLATE_STD(IGRP_IMPL)
