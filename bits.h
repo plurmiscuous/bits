@@ -31,8 +31,9 @@
 //      bits: the value to calculate on
 // RETURNS:
 //      - the number of set (non-zero) bits in the word
-#define POP_DECL(N) int pop##N(uint##N##_t bits);
-TEMPLATE_STD(POP_DECL)
+#define POP_DECLARATION(N) \
+    int pop##N(uint##N##_t bits);
+TEMPLATE_STD(POP_DECLARATION)
 
 // PARITY:
 //      int par(uint bits);
@@ -41,8 +42,9 @@ TEMPLATE_STD(POP_DECL)
 // RETURNS:
 //      - 0 if the number of set bits is even
 //      - 1 otherwise
-#define PAR_DECL(N) int par##N(uint##N##_t bits);
-TEMPLATE_STD(PAR_DECL)
+#define PAR_DECLARATION(N) \
+    int par##N(uint##N##_t bits);
+TEMPLATE_STD(PAR_DECLARATION)
 
 // COUNT TRAILING ZEROS:
 //      int ctz(uint bits);
@@ -50,8 +52,9 @@ TEMPLATE_STD(PAR_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - the number of least significant 0-bits before the first set bit
-#define CTZ_DECL(N) int ctz##N(uint##N##_t bits);
-TEMPLATE_STD(CTZ_DECL)
+#define CTZ_DECLARATION(N) \
+    int ctz##N(uint##N##_t bits);
+TEMPLATE_STD(CTZ_DECLARATION)
 
 // COUNT TRAILING ZEROS:
 //      int clz(uint bits);
@@ -59,8 +62,9 @@ TEMPLATE_STD(CTZ_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - the number of most significant 0-bits before the first set bit
-#define CLZ_DECL(N) int clz##N(uint##N##_t bits);
-TEMPLATE_STD(CLZ_DECL)
+#define CLZ_DECLARATION(N) \
+    int clz##N(uint##N##_t bits);
+TEMPLATE_STD(CLZ_DECLARATION)
 
 // LONGEST CHAIN OF SET BITS
 //      int mxset(uint bits);
@@ -68,8 +72,9 @@ TEMPLATE_STD(CLZ_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - the length of the longest chain of set bits
-#define MXSET_DECL(N) int mxset##N(uint##N##_t bits);
-TEMPLATE_STD(MXSET_DECL)
+#define MXSET_DECLARATION(N) \
+    int mxset##N(uint##N##_t bits);
+TEMPLATE_STD(MXSET_DECLARATION)
 
 // LONGEST CHAIN OF SET BITS
 //      int mnset(uint bits);
@@ -77,8 +82,9 @@ TEMPLATE_STD(MXSET_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - the length of the shortest chain of set bits
-#define MNSET_DECL(N) int mnset##N(uint##N##_t bits);
-TEMPLATE_STD(MNSET_DECL)
+#define MNSET_DECLARATION(N) \
+    int mnset##N(uint##N##_t bits);
+TEMPLATE_STD(MNSET_DECLARATION)
 
 // MAXIMUM
 //      uint max(uint x, uint y);
@@ -86,8 +92,9 @@ TEMPLATE_STD(MNSET_DECL)
 //      x, y: the values to compare
 // RETURNS:
 //      - the maximum of the $x and $y
-#define MAX_DECL(N) uint##N##_t max##N(uint##N##_t x, uint##N##_t y);
-TEMPLATE_STD(MAX_DECL)
+#define MAX_DECLARATION(N) \
+    uint##N##_t max##N(uint##N##_t x, uint##N##_t y);
+TEMPLATE_STD(MAX_DECLARATION)
 
 // MINIMUM
 //      uint min(uint x, uint y);
@@ -95,8 +102,9 @@ TEMPLATE_STD(MAX_DECL)
 //      x, y: the values to compare
 // RETURNS:
 //      - the minimum of the $x and $y
-#define MIN_DECL(N) uint##N##_t min##N(uint##N##_t x, uint##N##_t y);
-TEMPLATE_STD(MIN_DECL)
+#define MIN_DECLARATION(N) \
+    uint##N##_t min##N(uint##N##_t x, uint##N##_t y);
+TEMPLATE_STD(MIN_DECLARATION)
 
 // GREATEST COMMON DIVISOR
 //      uint gcd(uint x, uint y);
@@ -104,8 +112,9 @@ TEMPLATE_STD(MIN_DECL)
 //      x, y: the values to calculate on
 // RETURNS:
 //      - the largest integer that divides both $x and $y without a remainder
-#define GCD_DECL(N) uint##N##_t gcd##N(uint##N##_t x, uint##N##_t y);
-TEMPLATE_STD(GCD_DECL)
+#define GCD_DECLARATION(N) \
+    uint##N##_t gcd##N(uint##N##_t x, uint##N##_t y);
+TEMPLATE_STD(GCD_DECLARATION)
 
 // BINARY LOGARITHM
 //      uint lb(uint bits);
@@ -113,8 +122,9 @@ TEMPLATE_STD(GCD_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - returns the base-2 logarithm of $bits, rounded-down
-#define LB_DECL(N) uint##N##_t lb##N(uint##N##_t bits);
-TEMPLATE_STD(LB_DECL)
+#define LB_DECLARATION(N) \
+    uint##N##_t lb##N(uint##N##_t bits);
+TEMPLATE_STD(LB_DECLARATION)
 
 // IS POWER OF 2
 //      int ipow(uint bits);
@@ -124,8 +134,9 @@ TEMPLATE_STD(LB_DECL)
 //      - 0 if $bits is 0
 //      - 1 if $bits is a power-of-2
 //      - 0 otherwise
-#define IPOW_DECL(N) int ipow##N(uint##N##_t bits);
-TEMPLATE_STD(IPOW_DECL)
+#define IPOW_DECLARATION(N) \
+    int ipow##N(uint##N##_t bits);
+TEMPLATE_STD(IPOW_DECLARATION)
 
 // CEIL POWER OF 2
 //      uint cpow(uint bits);
@@ -136,8 +147,9 @@ TEMPLATE_STD(IPOW_DECL)
 //      - $bits if $bits is already a power-of-2
 //      - 0 if $bits is greater than the maximum power-of-2 the uint can hold
 //      - the next greatest power-of-2 greater than $bits, otherwise
-#define CPOW_DECL(N) uint##N##_t cpow##N(uint##N##_t bits);
-TEMPLATE_STD(CPOW_DECL)
+#define CPOW_DECLARATION(N) \
+    uint##N##_t cpow##N(uint##N##_t bits);
+TEMPLATE_STD(CPOW_DECLARATION)
 
 // FLOOR POWER OF 2
 //      uint fpow(uint bits);
@@ -147,8 +159,9 @@ TEMPLATE_STD(CPOW_DECL)
 //      - 0 if $bits is 0
 //      - $bits if $bits is already a power-of-2
 //      - the next smallest power-of-2 greater than $bits, otherwise
-#define FPOW_DECL(N) uint##N##_t fpow##N(uint##N##_t bits);
-TEMPLATE_STD(FPOW_DECL)
+#define FPOW_DECLARATION(N) \
+    uint##N##_t fpow##N(uint##N##_t bits);
+TEMPLATE_STD(FPOW_DECLARATION)
 
 // LEAST SIGNIFICANT BIT
 //      uint lsb(uint bits);
@@ -156,8 +169,9 @@ TEMPLATE_STD(FPOW_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - a mask with only the least significant bit of $bits set
-#define LSB_DECL(N) uint##N##_t lsb##N(uint##N##_t bits);
-TEMPLATE_STD(LSB_DECL)
+#define LSB_DECLARATION(N) \
+    uint##N##_t lsb##N(uint##N##_t bits);
+TEMPLATE_STD(LSB_DECLARATION)
 
 // MOST SIGNIFICANT BIT
 //      uint msb(uint bits);
@@ -165,8 +179,9 @@ TEMPLATE_STD(LSB_DECL)
 //      bits: the value to calculate on
 // RETURNS:
 //      - a mask with only the most significant bit of $bits set
-#define MSB_DECL(N) uint##N##_t msb##N(uint##N##_t bits);
-TEMPLATE_STD(MSB_DECL)
+#define MSB_DECLARATION(N) \
+    uint##N##_t msb##N(uint##N##_t bits);
+TEMPLATE_STD(MSB_DECLARATION)
 
 //// PERMUTATIONS
 
@@ -177,8 +192,9 @@ TEMPLATE_STD(MSB_DECL)
 //      rot: the number of positions to rotate left
 // RETURNS:
 //      - $bits cyclically shifted to the left by $rot
-#define ROL_DECL(N) uint##N##_t rol##N(uint##N##_t bits, int rot);
-TEMPLATE_STD(ROL_DECL)
+#define ROL_DECLARATION(N) \
+    uint##N##_t rol##N(uint##N##_t bits, int rot);
+TEMPLATE_STD(ROL_DECLARATION)
 
 // ROTATE RIGHT
 //      uint ror(uint bits, int rot);
@@ -187,8 +203,9 @@ TEMPLATE_STD(ROL_DECL)
 //      rot: the number of positions to rotate right
 // RETURNS:
 //      - $bits cyclically shifted to the right by $rot
-#define ROR_DECL(N) uint##N##_t ror##N(uint##N##_t bits, int rot);
-TEMPLATE_STD(ROR_DECL)
+#define ROR_DECLARATION(N) \
+    uint##N##_t ror##N(uint##N##_t bits, int rot);
+TEMPLATE_STD(ROR_DECLARATION)
 
 // DELTA SWAP
 //      uint delta(uint bits, uint mask, int shift);
@@ -198,8 +215,9 @@ TEMPLATE_STD(ROR_DECL)
 //      shift:
 // RETURNS:
 //      -
-#define DELTA_DECL(N) uint##N##_t delta##N(uint##N##_t bits, uint##N##_t mask, int shift);
-TEMPLATE_STD(DELTA_DECL)
+#define DELTA_DECLARATION(N) \
+    uint##N##_t delta##N(uint##N##_t bits, uint##N##_t mask, int shift);
+TEMPLATE_STD(DELTA_DECLARATION)
 
 // BIT SWAP
 //      uint bswap(uint bits, int i, int j);
@@ -208,8 +226,9 @@ TEMPLATE_STD(DELTA_DECL)
 //      i, j: the indices of the bits to swap
 // RETURNS:
 //      - $bits with the bit at $i swapped with the bit at $j
-#define BSWAP_DECL(N) uint##N##_t bswap##N(uint##N##_t bits, int i, int j);
-TEMPLATE_STD(BSWAP_DECL)
+#define BSWAP_DECLARATION(N) \
+    uint##N##_t bswap##N(uint##N##_t bits, int i, int j);
+TEMPLATE_STD(BSWAP_DECLARATION)
 
 // BIT-RANGE SWAP
 //      uint rswap(uint bits, int i, int j, int len);
@@ -220,8 +239,9 @@ TEMPLATE_STD(BSWAP_DECL)
 // RETURNS:
 //      - $bits with the $len bits above $i swapped with the $len bits above $j
 //      - undefined, if the specified bit-ranges ovelap
-#define RSWAP_DECL(N) uint##N##_t rswap##N(uint##N##_t bits, int i, int j, int len);
-TEMPLATE_STD(RSWAP_DECL)
+#define RSWAP_DECLARATION(N) \
+    uint##N##_t rswap##N(uint##N##_t bits, int i, int j, int len);
+TEMPLATE_STD(RSWAP_DECLARATION)
 
 // REVERSE
 //      uint rev(uint bits);
@@ -229,8 +249,9 @@ TEMPLATE_STD(RSWAP_DECL)
 //      bits: the bit array to permute
 // RETURNS:
 //      - the reverse of $bits
-#define REV_DECL(N) uint##N##_t rev##N(uint##N##_t bits);
-TEMPLATE_STD(REV_DECL)
+#define REV_DECLARATION(N) \
+    uint##N##_t rev##N(uint##N##_t bits);
+TEMPLATE_STD(REV_DECLARATION)
 
 // SHUFFLE
 //      uint shuf(uint bits);
@@ -238,8 +259,9 @@ TEMPLATE_STD(REV_DECL)
 //      bits: the bit array to permute
 // RETURNS:
 //      - $bits after a perfect outer-shuffle
-#define SHUF_DECL(N) uint##N##_t shuf##N(uint##N##_t bits);
-TEMPLATE_STD(SHUF_DECL)
+#define SHUF_DECLARATION(N) \
+    uint##N##_t shuf##N(uint##N##_t bits);
+TEMPLATE_STD(SHUF_DECLARATION)
 
 // INVERSE SHUFFLE
 //      uint ishuf(uint bits);
@@ -247,8 +269,9 @@ TEMPLATE_STD(SHUF_DECL)
 //      bits: the bit array to permute
 // RETURNS:
 //      - $bits after reversing a perfect outer-shuffle
-#define ISHUF_DECL(N) uint##N##_t ishuf##N(uint##N##_t bits);
-TEMPLATE_STD(ISHUF_DECL)
+#define ISHUF_DECLARATION(N) \
+    uint##N##_t ishuf##N(uint##N##_t bits);
+TEMPLATE_STD(ISHUF_DECLARATION)
 
 // GROUP
 //      uint grp(uint bits, uint mask);
@@ -257,8 +280,9 @@ TEMPLATE_STD(ISHUF_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define GRP_DECL(N) uint##N##_t grp##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(GRP_DECL)
+#define GRP_DECLARATION(N) \
+    uint##N##_t grp##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(GRP_DECLARATION)
 
 // UNGROUP
 //      uint igrp(uint bits, uint mask);
@@ -267,8 +291,9 @@ TEMPLATE_STD(GRP_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define IGRP_DECL(N) uint##N##_t igrp##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(IGRP_DECL)
+#define IGRP_DECLARATION(N) \
+    uint##N##_t igrp##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(IGRP_DECLARATION)
 
 // OMEGA-FLIP
 //      uint omflip(uint bits, uint mask, uint8_t ctrl);
@@ -278,8 +303,9 @@ TEMPLATE_STD(IGRP_DECL)
 //      ctrl:
 // RETURNS:
 //      -
-#define OMFLIP_DECL(N) uint##N##_t omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t ctrl);
-TEMPLATE_STD(OMFLIP_DECL)
+#define OMFLIP_DECLARATION(N) \
+    uint##N##_t omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t ctrl);
+TEMPLATE_STD(OMFLIP_DECLARATION)
 
 // BUTTERFLY NETWORK
 //      uint bfly(uint bits, uint mask);
@@ -288,8 +314,9 @@ TEMPLATE_STD(OMFLIP_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define BFLY_DECL(N) uint##N##_t bfly##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(BFLY_DECL)
+#define BFLY_DECLARATION(N) \
+    uint##N##_t bfly##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(BFLY_DECLARATION)
 
 // INVERSE BUTTERFLY NETWORK
 //      uint ibfly(uint bits, uint mask);
@@ -298,8 +325,9 @@ TEMPLATE_STD(BFLY_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define IBFLY_DECL(N) uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(IBFLY_DECL)
+#define IBFLY_DECLARATION(N) \
+    uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(IBFLY_DECLARATION)
 
 // BENES NETWORK
 //      uint benes(uint bits, uint mask, int log1, int log2);
@@ -310,8 +338,9 @@ TEMPLATE_STD(IBFLY_DECL)
 //      log2:
 // RETURNS:
 //      -
-#define BENES_DECL(N) uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2);
-TEMPLATE_STD(BENES_DECL)
+#define BENES_DECLARATION(N) \
+    uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2);
+TEMPLATE_STD(BENES_DECLARATION)
 
 // TRANSPOSE
 //      uint trans(uint bits, int rows);
@@ -320,57 +349,67 @@ TEMPLATE_STD(BENES_DECL)
 //      rows: the number of rows in the matrix
 // RETURNS:
 //      -
-#define TRANS_DECL(N) uint##N##_t trans##N(uint##N##_t bits, int rows);
-TEMPLATE_STD(TRANS_DECL)
+#define TRANS_DECLARATION(N) \
+    uint##N##_t trans##N(uint##N##_t bits, int rows);
+TEMPLATE_STD(TRANS_DECLARATION)
 
-/// MANIPULATIONS
+/////////////////////////
+///   MANIPULATIONS   ///
+/////////////////////////
 
 // LINEAR-FEEDBACK SHIFT REGISTER
 //      uint lfsr(uint bits);
 // PARAMETERS:
 //      bits: the bit value to manipulate
 // RETURNS:
-//      -
-#define LFSR_DECL(N) uint##N##_t lfsr##N(uint##N##_t bits);
-TEMPLATE_STD(LFSR_DECL)
+//      - the next value of an LFSR containing $bits as its state
+#define LFSR_DECLARATION(N) \
+    uint##N##_t lfsr##N(uint##N##_t bits);
+TEMPLATE_STD(LFSR_DECLARATION)
 
 // INVERSE LINEAR-FEEDBACK SHIFT REGISTER
 //      uint ilfsr(uint bits);
 // PARAMETERS:
 //      bits: the bit value to manipulate
 // RETURNS:
-//      -
-#define ILFSR_DECL(N) uint##N##_t ilfsr##N(uint##N##_t bits);
-TEMPLATE_STD(ILFSR_DECL)
+//      - the previous value of an LFSR containing $bits as its state
+#define ILFSR_DECLARATION(N) \
+    uint##N##_t ilfsr##N(uint##N##_t bits);
+TEMPLATE_STD(ILFSR_DECLARATION)
 
 // BITWISE TERNARY
 //      uint tern(uint xbits, uint ybits, uint ctrl);
 // PARAMETERS:
-//      xbits:
-//      ybits:
-//      ctrl:
+//      xbits: the bit values for a 'true' result
+//      ybits: the bit values for a 'false' result
+//      ctrl: the conditional bits
 // RETURNS:
-//      -
-#define TERN_DECL(N) uint##N##_t tern##N(uint##N##_t xbits, uint##N##_t ybits, uint##N##_t ctrl);
-TEMPLATE_STD(TERN_DECL)
+//      - the output with the i-th bit equal to the i-th bit from $xbits
+//        if $ctrl contains a 1 in that bit-position, otherwise the i-th bit of
+//        the output is equal to the i-th bit of $ybits
+#define TERN_DECLARATION(N) \
+    uint##N##_t tern##N(uint##N##_t xbits, uint##N##_t ybits, uint##N##_t ctrl);
+TEMPLATE_STD(TERN_DECLARATION)
 
 // BINARY REPRESENTATION TO GRAY CODE
 //      uint gray(uint bits);
 // PARAMETERS:
 //      bits: the bit value to manipulate
 // RETURNS:
-//      -
-#define GRAY_DECL(N) uint##N##_t gray##N(uint##N##_t bits);
-TEMPLATE_STD(GRAY_DECL)
+//      - the gray code representation of the binary value $bits
+#define GRAY_DECLARATION(N) \
+    uint##N##_t gray##N(uint##N##_t bits);
+TEMPLATE_STD(GRAY_DECLARATION)
 
 // GRAY CODE TO BINARY REPRESENTATION
 //      uint igray(uint bits);
 // PARAMETERS:
 //      bits: the bit value to manipulate
 // RETURNS:
-//      -
-#define IGRAY_DECL(N) uint##N##_t igray##N(uint##N##_t bits);
-TEMPLATE_STD(IGRAY_DECL)
+//      - the binary representation of the gray code $bits
+#define IGRAY_DECLARATION(N) \
+    uint##N##_t igray##N(uint##N##_t bits);
+TEMPLATE_STD(IGRAY_DECLARATION)
 
 // EXTRACT LEFT
 //      uint extl(uint bits, uint mask);
@@ -379,8 +418,9 @@ TEMPLATE_STD(IGRAY_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define EXTL_DECL(N) uint##N##_t extl##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(EXTL_DECL)
+#define EXTL_DECLARATION(N) \
+    uint##N##_t extl##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(EXTL_DECLARATION)
 
 // EXTRACT RIGHT
 //      uint extr(uint bits, uint mask);
@@ -389,8 +429,9 @@ TEMPLATE_STD(EXTL_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define EXTR_DECL(N) uint##N##_t extr##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(EXTR_DECL)
+#define EXTR_DECLARATION(N) \
+    uint##N##_t extr##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(EXTR_DECLARATION)
 
 // DEPOSIT LEFT
 //      uint depl(uint bits, uint mask);
@@ -399,8 +440,9 @@ TEMPLATE_STD(EXTR_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define DEPL_DECL(N) uint##N##_t depl##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(DEPL_DECL)
+#define DEPL_DECLARATION(N) \
+    uint##N##_t depl##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(DEPL_DECLARATION)
 
 // DEPOSIT RIGHT
 //      uint depr(uint bits, uint mask);
@@ -409,8 +451,9 @@ TEMPLATE_STD(DEPL_DECL)
 //      mask:
 // RETURNS:
 //      -
-#define DEPR_DECL(N) uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask);
-TEMPLATE_STD(DEPR_DECL)
+#define DEPR_DECLARATION(N) \
+    uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask);
+TEMPLATE_STD(DEPR_DECLARATION)
 
 // //////////////////////////////////
 // ////    P-SQUARE FUNCTIONS    ////

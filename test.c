@@ -45,6 +45,9 @@ int main(void) {
       test_bfly();
       // test_benes();
 
+      test_gray();
+      test_lfsr();
+
       test_trans();
 
       term_suite();

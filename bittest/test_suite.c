@@ -77,13 +77,13 @@ static void no_init_test_check(void) {
     }
 }
 
-static int suite_errors;
-static int prev_test_errors;
-static int prev_width_errors;
+static long long suite_errors;
+static long long prev_test_errors;
+static long long prev_width_errors;
 static void error(void) {
     ++suite_errors;
 }
-static int test_counter;
+static long long test_counter;
 static void test_count() {
     ++test_counter;
 }
@@ -159,8 +159,8 @@ void term_suite(void) {
     suite_init = false;
 
     printf("          +-" TEMPLATE_STD(BORDER_HYPHENS) "-+\n");
-    printf("             tests: %d\n", test_counter);
-    printf("            errors: %d\n", suite_errors);
+    printf("             tests: %lld\n", test_counter);
+    printf("            errors: %lld\n", suite_errors);
 
     print_diff = suite_errors = 0;
 }

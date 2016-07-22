@@ -32,7 +32,8 @@ void test_extr(void);
 void test_extl(void);
 void test_depr(void);
 void test_depl(void);
-
+void test_gray(void);
+void test_lfsr(void);
 void test_trans(void);
 
 

@@ -24,7 +24,7 @@ uint128_t func128(uint128_t);
 
 ## Support
 
-Currently bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced in a `uintN_t` format, where `N` is the width.
+Currently bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced through `uintN_t` type definitions, where `N` is the width.
 
 ### Extending
 

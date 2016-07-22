@@ -13,7 +13,7 @@
     int expect_pop##N(uint##N##_t bits) {                                                          \
         int set = 0;                                                                               \
         for (set = 0; bits; bits >>= 1)                                                            \
-            set += bits & 1;                                                                       \
+            set += bits & 0x1;                                                                     \
         return set;                                                                                \
     }
 TEMPLATE_STD(EXPECT_POP_IMPL)
@@ -199,8 +199,8 @@ TEMPLATE_STD(EXPECT_MSB_IMPL)
     uint##N##_t expect_rev##N(uint##N##_t bits) {                                                  \
         uint##N##_t rev = 0;                                                                       \
         for (size_t i = 0; i < BITS##N - 1; ++i, rev <<= 1, bits >>= 1)                            \
-            rev |= bits & 1;                                                                       \
-        rev |= bits & 1;                                                                           \
+            rev |= bits & 0x1;                                                                     \
+        rev |= bits & 0x1;                                                                         \
         return rev;                                                                                \
     }
 TEMPLATE_STD(EXPECT_REV_IMPL)
@@ -211,7 +211,7 @@ TEMPLATE_STD(EXPECT_REV_IMPL)
         uint##N##_t hi = (bits >> (BITS##N / 2)) & UNIT##N[0];                                     \
         uint##N##_t shuf = 0;                                                                      \
         for (size_t i = 0; i < BITS##N / 2; ++i)                                                   \
-            shuf |= (lo & 1ULL << i) << i | (hi & 1ULL << i) << (i + 1);                           \
+            shuf |= (lo & ONE##N << i) << i | (hi & ONE##N << i) << (i + 1);                       \
         return shuf;                                                                               \
     }
 TEMPLATE_STD(EXPECT_SHUF_IMPL)
@@ -229,6 +229,25 @@ TEMPLATE_STD(EXPECT_SHUF_IMPL)
     }
 TEMPLATE_STD(EXPECT_ISHUF_IMPL)
 
+// Group:
+//     Pseudocode for the GRP operation:
+//         uint grp(uint R1, uint R2) {
+//             uint R3 = 0;
+//             int j = 0;
+//             for (int i = 0; i < N; i++)
+//                 if (R2[i] == 1)
+//                     R3[j++] = R1[i];
+//             for (int i = 0; i < N; i++)
+//                 if (R2[i] == 0)
+//                     R3[j++] = R1[i];
+//             return R3;
+//         }
+// Source:
+//     Ruby B. Lee, Zhijie Jerry Shi, Xiao Yang; Efficient Permutation
+//         Instructions for Fast Software Cryptography
+//     url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
+//     Ruby B. Lee, Zhijie Jerry Shi; US Patent No. 7174014
+//     url: http://patentimages.storage.googleapis.com/pdfs/US7174014.pdf
 #define EXPECT_GRP_IMPL(N)                                                                         \
     uint##N##_t expect_grp##N(uint##N##_t bits, uint##N##_t mask) {                                \
         uint##N##_t grp = 0;                                                                       \
@@ -248,8 +267,25 @@ TEMPLATE_STD(EXPECT_ISHUF_IMPL)
                                                                                                    \
         return grp;                                                                                \
     }
-TEMPLATE_STD(EXPECT_GRP_IMPL)
 
+// Ungroup:
+//     Pseudocode for the UNGRP operation:
+//         uint ungrp(uint R1, uint R2) {
+//             uint R3 = 0;
+//             int j = 0;
+//             for (int i = 0; i < N; i++)
+//                 if (R2[i] == 1)
+//                     R3[i] = R1[j++];
+//             for (int i = 0; i < N; i++)
+//                 if (R2[i] == 0)
+//                     R3[i] = R1[j++];
+//             return R3;
+//         }
+// Source:
+//     Zhijie Jerry Shi; Bit Permutation Instructions: Architecture,
+//         Implementation, and Cryptographic Properties
+//     url: http://saluc.engr.uconn.edu/publications/shi_thesis.pdf
+TEMPLATE_STD(EXPECT_GRP_IMPL)
 #define EXPECT_IGRP_IMPL(N)                                                                        \
     uint##N##_t expect_igrp##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t igrp = 0;                                                                      \
@@ -276,6 +312,28 @@ TEMPLATE_STD(EXPECT_GRP_IMPL)
     }
 TEMPLATE_STD(EXPECT_IGRP_IMPL)
 
+// Omega-Flip:
+//     Pseudocode for the OMFLIP operation:
+//         uint omflip(uint R1, uint R2, uint8_t c) {
+//             uint R3 = 0;
+//             for (int i = 0; i < 2; i++)
+//                 if (c[i] == 0)
+//                     for (int j = 0; j < N / 2; j++)
+//                         R3[2 * j] = R1[j];
+//                         R3[2 * j + 1] = R1[j + N / 2];
+//                         if (R2[j] == 1)
+//                             swap(R3[2 * j], R3[2 * j + 1]);
+//                 else
+//                     for (int j = 0; j < N / 2; j++)
+//                         R3[j] = R1[2 * j];
+//                         R3[j + N / 2] = R1[2 * j + 1];
+//                         if (R2[j + N / 2] == 1)
+//                             swap(R3[j], R3[j + N / 2]);
+//             return R3;
+//         }
+// Source:
+//     Ruby B. Lee and Xiao Yang; US Patent No. 6952478
+//     url: http://patentimages.storage.googleapis.com/pdfs/US6952478.pdf
 #define EXPECT_OMFLIP_IMPL(N)                                                                      \
     uint##N##_t expect_omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {               \
         uint##N##_t omflip = 0;                                                                    \
@@ -302,6 +360,22 @@ TEMPLATE_STD(EXPECT_IGRP_IMPL)
     }
 TEMPLATE_STD(EXPECT_OMFLIP_IMPL)
 
+// Butterfly Network:
+//     Pseudocode for the BFLY operation:
+//         uint bfly(uint R1, uint R2) {
+//             uint R3 = R1;
+//             for (int dist = N / 2; dist > 0; dist = dist / 2)
+//                 for (int k = 0; k < N; k += 2 * dist)
+//                     for (int j = 0; j < dist; j++)
+//                         if (R2[k + j] == 1)
+//                             swap(R3[k + j], R3[k + j + dist]);
+//             return R3;
+//         }
+// Source:
+//     Ruby B. Lee, Zhijie Jerry Shi, Xiao Yang; Efficient Permutation
+//         Instructions for Fast Software Cryptography (Adapted from CROSS
+//         pseudocode)
+//     url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
 #define EXPECT_BFLY_IMPL(N)                                                                        \
     uint##N##_t expect_bfly##N(uint##N##_t bits, uint##N##_t mask) {                               \
         for (int d = BITS##N / 2; d > 0; d /= 2)                                                   \
@@ -340,6 +414,9 @@ TEMPLATE_STD(EXPECT_IBFLY_IMPL)
     }
 TEMPLATE_STD(EXPECT_BENES_IMPL)
 
+// Source:
+//     Bit manipulations using BMI2
+//     url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
 #define EXPECT_EXTR_IMPL(N)                                                                        \
     uint##N##_t expect_extr##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
@@ -353,30 +430,9 @@ TEMPLATE_STD(EXPECT_BENES_IMPL)
     }
 TEMPLATE_STD(EXPECT_EXTR_IMPL)
 
-#define EXPECT_EXTL_IMPL(N)                                                                        \
-    uint##N##_t expect_extl##N(uint##N##_t bits, uint##N##_t mask) {                               \
-        uint##N##_t res = 0;                                                                       \
-        int k = BITS##N;                                                                           \
-        for (int i = BITS##N; i-- > 0;)                                                            \
-            if (mask >> i & 0x1)                                                                   \
-                res |= (bits >> i & 0x1) << --k;                                                   \
-        return res;                                                                                \
-    }
-TEMPLATE_STD(EXPECT_EXTL_IMPL)
-
-#define EXPECT_DEPR_IMPL(N)                                                                        \
-    uint##N##_t expect_depr##N(uint##N##_t bits, uint##N##_t mask) {                               \
-        uint##N##_t res = 0;                                                                       \
-        int k = BITS##N;                                                                           \
-                                                                                                   \
-        for (int i = BITS##N; i-- > 0;)                                                            \
-            if (mask >> i & 0x1)                                                                   \
-                res |= (bits >> --k & 0x1) << i;                                                   \
-                                                                                                   \
-        return res;                                                                                \
-    }
-TEMPLATE_STD(EXPECT_DEPR_IMPL)
-
+// Source:
+//     Bit manipulations using BMI2
+//     url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
 #define EXPECT_DEPL_IMPL(N)                                                                        \
     uint##N##_t expect_depl##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
@@ -390,15 +446,42 @@ TEMPLATE_STD(EXPECT_DEPR_IMPL)
     }
 TEMPLATE_STD(EXPECT_DEPL_IMPL)
 
+#define EXPECT_EXTL_IMPL(N)                                                                        \
+    uint##N##_t expect_extl##N(uint##N##_t bits, uint##N##_t mask) {                               \
+        uint##N##_t res = 0;                                                                       \
+        int k = BITS##N;                                                                           \
+        for (int i = BITS##N; i--;)                                                                \
+            if (mask >> i & 0x1)                                                                   \
+                res |= (bits >> i & 0x1) << --k;                                                   \
+        return res;                                                                                \
+    }
+TEMPLATE_STD(EXPECT_EXTL_IMPL)
+
+#define EXPECT_DEPR_IMPL(N)                                                                        \
+    uint##N##_t expect_depr##N(uint##N##_t bits, uint##N##_t mask) {                               \
+        uint##N##_t res = 0;                                                                       \
+        int k = BITS##N;                                                                           \
+                                                                                                   \
+        for (int i = BITS##N; i--;)                                                                \
+            if (mask >> i & 0x1)                                                                   \
+                res |= (bits >> --k & 0x1) << i;                                                   \
+                                                                                                   \
+        return res;                                                                                \
+    }
+TEMPLATE_STD(EXPECT_DEPR_IMPL)
+
+// Source:
+//     Inplace (Fixed space) M x N size matrix transpose
+//     url: http://www.geeksforgeeks.org/inplace-m-x-n-size-matrix-transpose/
 #define EXPECT_TRANS_IMPL(N)                                                                       \
     uint##N##_t expect_trans##N(uint##N##_t bits, int rows) {                                      \
         int cols = N / rows;                                                                       \
-        for(int i = 0; i < rows * cols; i++) {                                                     \
+        for (int i = 0; i < rows * cols; i++) {                                                    \
             int j = i;                                                                             \
             do                                                                                     \
                 j = (j % rows) * cols + (j / rows);                                                \
-            while(j < i);                                                                          \
-            bits = bswap##N(bits, i, j);                                                           \
+            while (j < i);                                                                         \
+            bits = expect_bswap##N(bits, i, j);                                                    \
         }                                                                                          \
         return bits;                                                                               \
     }

@@ -14,9 +14,6 @@
     #define assert(x) ((void)(0))  // no side-effects
 #endif
 
-// SAFE NO-BRANCH XOR-SWAP (NB: Haven't re-tested after adding the & operators)
-// #define SWAP(a, b) ((&(a) ^ &(b)) && ((b) ^= (a) ^= (b), (a) ^= (b)))
-
 ////////////////////////////
 ////    CALCULATIONS    ////
 ////////////////////////////
@@ -27,13 +24,13 @@
 //             bits = (bits & WORD[i]) + ((bits >> (1 << i)) & WORD[i]);
 //         return bits;
 //     }
-#define POP_IMPL(N)                                                                                \
+#define POP_DEFINITION(N)                                                                          \
     int pop##N(uint##N##_t bits) {                                                                 \
         for (int i = 0; i < LOG##N; ++i)                                                           \
             bits = (bits & WORD##N[i]) + ((bits >> (1 << i)) & WORD##N[i]);                        \
         return bits;                                                                               \
     }
-TEMPLATE_STD(POP_IMPL)
+TEMPLATE_STD(POP_DEFINITION)
 
 // PARITY
 //     int parN(uint bits) {
@@ -41,13 +38,13 @@ TEMPLATE_STD(POP_IMPL)
 //             bits ^= bits >> i;
 //         return bits & 0x1;
 //     }
-#define PAR_IMPL(N)                                                                                \
+#define PAR_DEFINITION(N)                                                                          \
     int par##N(uint##N##_t bits) {                                                                 \
         for (int i = BITS##N; (i >>= 1) != 0;)                                                     \
             bits ^= bits >> i;                                                                     \
         return bits & 0x1;                                                                         \
     }
-TEMPLATE_STD(PAR_IMPL)
+TEMPLATE_STD(PAR_DEFINITION)
 
 // COUNT TRAILING ZEROS
 //     int ctzN(uint bits) {
@@ -65,7 +62,7 @@ TEMPLATE_STD(PAR_IMPL)
 //         }
 //         return n - (bits & 1);
 //     }
-#define CTZ_IMPL(N)                                                                                \
+#define CTZ_DEFINITION(N)                                                                          \
     int ctz##N(uint##N##_t bits) {                                                                 \
         int n = 1;                                                                                 \
         uint##N##_t mask = NEG##N;                                                                 \
@@ -78,7 +75,7 @@ TEMPLATE_STD(PAR_IMPL)
         }                                                                                          \
         return (-(bits == 0) & BITS##N) | (-(bits != 0) & (n - (bits & 1)));                       \
     }
-TEMPLATE_STD(CTZ_IMPL)
+TEMPLATE_STD(CTZ_DEFINITION)
 
 // COUNT LEADING ZEROS
 //     int clzN(uint bits) {
@@ -96,7 +93,7 @@ TEMPLATE_STD(CTZ_IMPL)
 //         }
 //         return n;
 //     }
-#define CLZ_IMPL(N)                                                                                \
+#define CLZ_DEFINITION(N)                                                                          \
     int clz##N(uint##N##_t bits) {                                                                 \
         int n = 0;                                                                                 \
         uint##N##_t mask = NEG##N >> (BITS##N >> 1);                                               \
@@ -109,7 +106,7 @@ TEMPLATE_STD(CTZ_IMPL)
         }                                                                                          \
         return (-(bits == 0) & BITS##N) | (-(bits != 0) & n);                                      \
     }
-TEMPLATE_STD(CLZ_IMPL)
+TEMPLATE_STD(CLZ_DEFINITION)
 
 // LONGEST CHAIN OF SET BITS
 //     int mxsetN(uint bits) {
@@ -118,14 +115,14 @@ TEMPLATE_STD(CLZ_IMPL)
 //             bits &= (bits >> 1);
 //         return k;
 //     }
-#define MXSET_IMPL(N)                                                                              \
+#define MXSET_DEFINITION(N)                                                                        \
     int mxset##N(uint##N##_t bits) {                                                               \
         int k;                                                                                     \
         for (k = 0; bits != 0; ++k)                                                                \
             bits &= (bits >> 1);                                                                   \
         return k;                                                                                  \
     }
-TEMPLATE_STD(MXSET_IMPL)
+TEMPLATE_STD(MXSET_DEFINITION)
 
 // SHORTEST CHAIN OF SET BITS
 //     int mnsetN(uint bits) {
@@ -136,7 +133,7 @@ TEMPLATE_STD(MXSET_IMPL)
 //             up <<= 1;
 //         return k - !bits;
 //     }
-#define MNSET_IMPL(N)                                                                              \
+#define MNSET_DEFINITION(N)                                                                        \
     int mnset##N(uint##N##_t bits) {                                                               \
         uint##N##_t dn = bits & ~(bits >> 1);                                                      \
         uint##N##_t up = bits & ~(bits << 1);                                                      \
@@ -145,27 +142,27 @@ TEMPLATE_STD(MXSET_IMPL)
             up <<= 1;                                                                              \
         return k - !bits;                                                                          \
     }
-TEMPLATE_STD(MNSET_IMPL)
+TEMPLATE_STD(MNSET_DEFINITION)
 
 // MAXIMUM
 //     uint maxN(uint x, uint y) {
 //         return x ^ ((x ^ y) & -(x < y));
 //     }
-#define MAX_IMPL(N)                                                                                \
+#define MAX_DEFINITION(N)                                                                          \
     uint##N##_t max##N(uint##N##_t x, uint##N##_t y) {                                             \
         return x ^ ((x ^ y) & -(x < y));                                                           \
     }
-TEMPLATE_STD(MAX_IMPL)
+TEMPLATE_STD(MAX_DEFINITION)
 
 // MINIMUM
 //     uint maxN(uint x, uint y) {
 //         return y ^ ((x ^ y) & -(x < y));
 //     }
-#define MIN_IMPL(N)                                                                                \
+#define MIN_DEFINITION(N)                                                                          \
     uint##N##_t min##N(uint##N##_t x, uint##N##_t y) {                                             \
         return y ^ ((x ^ y) & -(x < y));                                                           \
     }
-TEMPLATE_STD(MIN_IMPL)
+TEMPLATE_STD(MIN_DEFINITION)
 
 // GREATEST COMMON DIVISOR
 //     uint gcdN(uint a, uint b) {
@@ -175,7 +172,7 @@ TEMPLATE_STD(MIN_IMPL)
 //         }
 //         return a;
 //     }
-#define GCD_IMPL(N)                                                                                \
+#define GCD_DEFINITION(N)                                                                          \
     uint##N##_t gcd##N(uint##N##_t x, uint##N##_t y) {                                             \
         while (y != 0) {                                                                           \
             y ^= x %= y;                                                                           \
@@ -183,15 +180,15 @@ TEMPLATE_STD(MIN_IMPL)
         }                                                                                          \
         return x;                                                                                  \
     }
-TEMPLATE_STD(GCD_IMPL)
+TEMPLATE_STD(GCD_DEFINITION)
 
 // BINARY LOGARITHM
-#define LB_IMPL(N)                                                                                 \
+#define LB_DEFINITION(N)                                                                           \
     uint##N##_t lb##N(uint##N##_t bits) {                                                          \
         uint##N##_t m = NEG##N;                                                                    \
         uint##N##_t log = 0;                                                                       \
                                                                                                    \
-        for (int i = LOG##N; i-- != 0;) {                                                          \
+        for (int i = LOG##N; i--;) {                                                               \
             m >>= (1 << i);                                                                        \
             uint##N##_t shift = (bits > m) << i;                                                   \
             bits >>= shift;                                                                        \
@@ -200,17 +197,17 @@ TEMPLATE_STD(GCD_IMPL)
                                                                                                    \
         return log;                                                                                \
     }
-TEMPLATE_STD(LB_IMPL)
+TEMPLATE_STD(LB_DEFINITION)
 
 // IS POWER OF 2
-#define IPOW_IMPL(N)                                                                               \
+#define IPOW_DEFINITION(N)                                                                         \
     int ipow##N(uint##N##_t bits) {                                                                \
         return bits && (bits & (bits - 1)) == 0;                                                   \
     }
-TEMPLATE_STD(IPOW_IMPL)
+TEMPLATE_STD(IPOW_DEFINITION)
 
 // CEIL POWER OF 2
-#define CPOW_IMPL(N)                                                                               \
+#define CPOW_DEFINITION(N)                                                                         \
     uint##N##_t cpow##N(uint##N##_t bits) {                                                        \
         bits += bits == 0;                                                                         \
         --bits;                                                                                    \
@@ -219,32 +216,32 @@ TEMPLATE_STD(IPOW_IMPL)
         ++bits;                                                                                    \
         return bits;                                                                               \
     }
-TEMPLATE_STD(CPOW_IMPL)
+TEMPLATE_STD(CPOW_DEFINITION)
 
 // FLOOR POWER OF 2
-#define FPOW_IMPL(N)                                                                               \
+#define FPOW_DEFINITION(N)                                                                         \
     uint##N##_t fpow##N(uint##N##_t bits) {                                                        \
         for (int i = BITS##N; (i >>= 1) != 0;)                                                     \
             bits |= bits >> i;                                                                     \
         return bits - (bits >> 1);                                                                 \
     }
-TEMPLATE_STD(FPOW_IMPL)
+TEMPLATE_STD(FPOW_DEFINITION)
 
 // ISOLATE LEAST SIGNIFICANT SET BIT
-#define LSB_IMPL(N)                                                                                \
+#define LSB_DEFINITION(N)                                                                          \
     uint##N##_t lsb##N(uint##N##_t bits) {                                                         \
         return bits & -bits;                                                                       \
     }
-TEMPLATE_STD(LSB_IMPL)
+TEMPLATE_STD(LSB_DEFINITION)
 
 // ISOLATE MOST SIGNIFICANT SET BIT
-#define MSB_IMPL(N)                                                                                \
+#define MSB_DEFINITION(N)                                                                          \
     uint##N##_t msb##N(uint##N##_t bits) {                                                         \
         for (int i = BITS##N; (i >>= 1) != 0;)                                                     \
             bits |= bits >> i;                                                                     \
         return (bits >> 1) + (bits != 0);                                                          \
     }
-TEMPLATE_STD(MSB_IMPL)
+TEMPLATE_STD(MSB_DEFINITION)
 
 ////////////////////////////
 ////    PERMUTATIONS    ////
@@ -254,58 +251,58 @@ TEMPLATE_STD(MSB_IMPL)
 //     uint rolN(uint bits, int rot) {
 //         return (bits << rot) | (bits >> (BITS - rot));
 //     }
-#define ROL_IMPL(N)                                                                                \
+#define ROL_DEFINITION(N)                                                                          \
     uint##N##_t rol##N(uint##N##_t bits, int rot) {                                                \
         assert(0 <= rot && rot < BITS##N);                                                         \
         return (bits << rot) | (bits >> (BITS##N - rot));                                          \
     }
-TEMPLATE_STD(ROL_IMPL)
+TEMPLATE_STD(ROL_DEFINITION)
 
 // ROTATE RIGHT
 //     uint rorN(uint bits, int rot) {
 //         return (bits << (BITS - rot)) | (bits >> rot);
 //     }
-#define ROR_IMPL(N)                                                                                \
+#define ROR_DEFINITION(N)                                                                          \
     uint##N##_t ror##N(uint##N##_t bits, int rot) {                                                \
         assert(0 <= rot && rot < BITS##N);                                                         \
         return (bits << (BITS##N - rot)) | (bits >> rot);                                          \
     }
-TEMPLATE_STD(ROR_IMPL)
+TEMPLATE_STD(ROR_DEFINITION)
 
 // DELTA SWAP
 //     uint deltaN(uint bits, uint mask, int shift) {
 //         uint tmp = (bits ^ (bits >> shift)) & mask;
 //         return bits ^ tmp ^ (tmp << shift);;
 //     }
-#define DELTA_IMPL(N)                                                                              \
+#define DELTA_DEFINITION(N)                                                                        \
     uint##N##_t delta##N(uint##N##_t bits, uint##N##_t mask, int delta) {                          \
         assert(0 <= delta && delta < BITS##N);                                                     \
         uint##N##_t tmp = (bits ^ (bits >> delta)) & mask;                                         \
         bits ^= tmp ^ (tmp << delta);                                                              \
         return bits;                                                                               \
     }
-TEMPLATE_STD(DELTA_IMPL)
+TEMPLATE_STD(DELTA_DEFINITION)
 
 // SWAPPING INDIVIDUAL BITS
     // uint bswpN(uint bits, int i, int j) {
     //     uint tmp = ((bits >> i) ^ (bits >> j)) & 1;
     //     return bits ^ ((tmp << i) | (tmp << j));
     // }
-#define BSWAP_IMPL(N)                                                                              \
+#define BSWAP_DEFINITION(N)                                                                        \
     uint##N##_t bswap##N(uint##N##_t bits, int i, int j) {                                         \
         assert(0 <= i && i < BITS##N);                                                             \
         assert(0 <= j && j < BITS##N);                                                             \
         uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & 1;                                         \
         return bits ^ ((tmp << i) | (tmp << j));                                                   \
     }
-TEMPLATE_STD(BSWAP_IMPL)
+TEMPLATE_STD(BSWAP_DEFINITION)
 
 // SWAPPING BIT RANGES
 //     uint rswpN(uint bits, int i, int j, int len) {
 //         uint tmp = ((bits >> i) ^ (bits >> j)) & ((ONE << len) - 1);
 //         return bits ^ ((tmp << i) | (tmp << j));
 //     }
-#define RSWAP_IMPL(N)                                                                              \
+#define RSWAP_DEFINITION(N)                                                                        \
     uint##N##_t rswap##N(uint##N##_t bits, int i, int j, int len) {                                \
         assert(0 <= len && len <= BITS##N);                                                        \
         assert(0 <= i && i < BITS##N && i + len <= BITS##N);                                       \
@@ -314,7 +311,7 @@ TEMPLATE_STD(BSWAP_IMPL)
         uint##N##_t tmp = ((bits >> i) ^ (bits >> j)) & ((ONE##N << len) - 1);                     \
         return bits ^ ((tmp << i) | (tmp << j));                                                   \
     }
-TEMPLATE_STD(RSWAP_IMPL)
+TEMPLATE_STD(RSWAP_DEFINITION)
 
 // REVERSE
 //     uint revN(uint bits) {
@@ -322,13 +319,13 @@ TEMPLATE_STD(RSWAP_IMPL)
 //             bits = (bits & WORD[i]) << (1 << i) | (bits & ~WORD[i]) >> (1 << i);
 //         return bits;
 //     }
-#define REV_IMPL(N)                                                                                \
+#define REV_DEFINITION(N)                                                                          \
     uint##N##_t rev##N(uint##N##_t bits) {                                                         \
         for (int i = 0; i < LOG##N; ++i)                                                           \
             bits = (bits & WORD##N[i]) << (1 << i) | (bits & ~WORD##N[i]) >> (1 << i);             \
         return bits;                                                                               \
     }
-TEMPLATE_STD(REV_IMPL)
+TEMPLATE_STD(REV_DEFINITION)
 
 // PERFECT OUTER-SHUFFLE
 //     uint shufN(uint bits, int size) {
@@ -336,13 +333,13 @@ TEMPLATE_STD(REV_IMPL)
 //             bits = deltaN(bits, SHUF[i], 1 << i);
 //         return bits;
 //     }
-#define SHUF_IMPL(N)                                                                               \
+#define SHUF_DEFINITION(N)                                                                         \
     uint##N##_t shuf##N(uint##N##_t bits) {                                                        \
-        for (int i = LOG##N - 1; i-- != 0;)                                                        \
+        for (int i = LOG##N - 1; i--;)                                                             \
             bits = delta##N(bits, SHUF##N[i], 1 << i);                                             \
         return bits;                                                                               \
     }
-TEMPLATE_STD(SHUF_IMPL)
+TEMPLATE_STD(SHUF_DEFINITION)
 
 // PERFECT OUTER-UNSHUFFLE
 //     uint ishufN(uint bits, int size) {
@@ -350,13 +347,13 @@ TEMPLATE_STD(SHUF_IMPL)
 //             bits = deltaN(bits, SHUF[i], 1 << i);
 //         return bits;
 //     }
-#define ISHUF_IMPL(N)                                                                              \
+#define ISHUF_DEFINITION(N)                                                                        \
     uint##N##_t ishuf##N(uint##N##_t bits) {                                                       \
         for (int i = 0; i < LOG##N - 1; ++i)                                                       \
             bits = delta##N(bits, SHUF##N[i], 1 << i);                                             \
         return bits;                                                                               \
     }
-TEMPLATE_STD(ISHUF_IMPL)
+TEMPLATE_STD(ISHUF_DEFINITION)
 
 // OMFLIP
 //     uint omflipN(uint bits, uint mask, uint8_t opts) {
@@ -372,7 +369,7 @@ TEMPLATE_STD(ISHUF_IMPL)
 //         }
 //         return bits;
 //     }
-#define OMFLIP_IMPL(N)                                                                             \
+#define OMFLIP_DEFINITION(N)                                                                       \
     uint##N##_t omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {                      \
         for (int i = 0; i < 2; ++i) {                                                              \
             uint##N##_t m = (mask >> (i * (BITS##N >> 1))) & WORD##N[LOG##N - 1];                  \
@@ -386,21 +383,21 @@ TEMPLATE_STD(ISHUF_IMPL)
         }                                                                                          \
         return bits;                                                                               \
     }
-TEMPLATE_STD(OMFLIP_IMPL)
+TEMPLATE_STD(OMFLIP_DEFINITION)
 
 // BUTTERFLY NETWORK
 //     uint bflyN(uint bits, uint mask) {
-//         for (int i = LOG; i-- != 0;)
+//         for (int i = LOG; i--;)
 //             bits = deltaN(bits, mask & WORD[i], 1 << i);
 //         return bits;
 //     }
-#define BFLY_IMPL(N)                                                                               \
+#define BFLY_DEFINITION(N)                                                                         \
     uint##N##_t bfly##N(uint##N##_t bits, uint##N##_t mask) {                                      \
-        for (int i = LOG##N; i-- != 0;)                                                            \
+        for (int i = LOG##N; i--;)                                                                 \
             bits = delta##N(bits, mask & WORD##N[i], 1 << i);                                      \
         return bits;                                                                               \
     }
-TEMPLATE_STD(BFLY_IMPL)
+TEMPLATE_STD(BFLY_DEFINITION)
 
 // INVERSE-BUTTERFLY NETWORK
 //     uint ibflyN(uint bits, uint mask) {
@@ -408,13 +405,13 @@ TEMPLATE_STD(BFLY_IMPL)
 //             bits = deltaN(bits, mask & WORD[i], 1 << i);
 //         return bits;
 //     }
-#define IBFLY_IMPL(N)                                                                              \
+#define IBFLY_DEFINITION(N)                                                                        \
     uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask) {                                     \
         for (int i = 0; i < LOG##N; ++i)                                                           \
             bits = delta##N(bits, mask & WORD##N[i], 1 << i);                                      \
         return bits;                                                                               \
     }
-TEMPLATE_STD(IBFLY_IMPL)
+TEMPLATE_STD(IBFLY_DEFINITION)
 
 // BENES NETWORK
 //     uint benesN(uint bits, uint mask, int log1, int log2) {
@@ -422,7 +419,7 @@ TEMPLATE_STD(IBFLY_IMPL)
 //         bits = deltaN(bits, mask & WORD[log2], 1 << log2);
 //         return bits;
 //     }
-#define BENES_IMPL(N)                                                                              \
+#define BENES_DEFINITION(N)                                                                        \
     uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2) {                 \
         assert(0 <= log1 && log1 < LOG##N);                                                        \
         assert(0 <= log2 && log2 < LOG##N);                                                        \
@@ -430,7 +427,7 @@ TEMPLATE_STD(IBFLY_IMPL)
         bits = delta##N(bits, mask & WORD##N[log2], 1 << log2);                                    \
         return bits;                                                                               \
     }
-TEMPLATE_STD(BENES_IMPL)
+TEMPLATE_STD(BENES_DEFINITION)
 
 // MATRIX TRANSPOSE
 //     uint transN(uint bits, int rows) {
@@ -452,7 +449,7 @@ TEMPLATE_STD(BENES_IMPL)
 //         }
 //         return bits;
 //     }
-#define TRANS_IMPL(N)                                                                              \
+#define TRANS_DEFINITION(N)                                                                        \
     uint##N##_t trans##N(uint##N##_t bits, int rows) {                                             \
         assert(((N / rows) * rows) == N);                                                          \
         int c = LOG##N - lb##N(rows);                                                              \
@@ -473,7 +470,7 @@ TEMPLATE_STD(BENES_IMPL)
         }                                                                                          \
         return bits;                                                                               \
     }
-TEMPLATE_STD(TRANS_IMPL)
+TEMPLATE_STD(TRANS_DEFINITION)
 
 /////////////////////////////
 ////    MANIPULATIONS    ////
@@ -484,44 +481,44 @@ TEMPLATE_STD(TRANS_IMPL)
 //         bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPSN);
 //         return bits;
 //     }
-#define LFSR_IMPL(N)                                                                               \
+#define LFSR_DEFINITION(N)                                                                         \
     uint##N##_t lfsr##N(uint##N##_t bits) {                                                        \
         bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPS##N);                                         \
         return bits;                                                                               \
     }
-TEMPLATE_STD(LFSR_IMPL)
+TEMPLATE_STD(LFSR_DEFINITION)
 
 // INVERSE LFSR WITH MAXIMAL-LENGTH SEQUENCE
 //     uint ilfsrN(uint bits) {
 //         bits = (bits << 1) ^ (-(bits >> (BITS - 1)) & RTAPSN);
 //         return bits;
 //     }
-#define ILFSR_IMPL(N)                                                                              \
+#define ILFSR_DEFINITION(N)                                                                        \
     uint##N##_t ilfsr##N(uint##N##_t bits) {                                                       \
         bits = (bits << 1) ^ (-(bits >> (BITS##N - 1)) & RTAPS##N);                                \
         return bits;                                                                               \
     }
-TEMPLATE_STD(ILFSR_IMPL)
+TEMPLATE_STD(ILFSR_DEFINITION)
 
 // BITWISE TERNARY
 //     uint ternN(uint xbits, uint ybits, uint mask) {
 //         return (mask & (xbits ^ ybits)) ^ ybits;
 //     }
-#define TERN_IMPL(N)                                                                               \
+#define TERN_DEFINITION(N)                                                                         \
     uint##N##_t tern##N(uint##N##_t xbits, uint##N##_t ybits, uint##N##_t mask) {                  \
         return (mask & (xbits ^ ybits)) ^ ybits;                                                   \
     }
-TEMPLATE_STD(TERN_IMPL)
+TEMPLATE_STD(TERN_DEFINITION)
 
 // BINARY TO GRAY CODE
 //     uint grayN(uint bits) {
 //         return bits ^ (bits >> 1);
 //     }
-#define GRAY_IMPL(N)                                                                               \
+#define GRAY_DEFINITION(N)                                                                         \
     uint##N##_t gray##N(uint##N##_t bits) {                                                        \
         return bits ^ (bits >> 1);                                                                 \
     }
-TEMPLATE_STD(GRAY_IMPL)
+TEMPLATE_STD(GRAY_DEFINITION)
 
 // GRAY TO BINARY CODE
 //     uint igrayN(uint bits) {
@@ -529,13 +526,13 @@ TEMPLATE_STD(GRAY_IMPL)
 //             bits ^= bits >> i;
 //         return bits;
 //     }
-#define IGRAY_IMPL(N)                                                                              \
+#define IGRAY_DEFINITION(N)                                                                        \
     uint##N##_t igray##N(uint##N##_t bits) {                                                       \
         for (int i = 1; i < BITS##N; i <<= 1)                                                      \
             bits ^= bits >> i;                                                                     \
         return bits;                                                                               \
     }
-TEMPLATE_STD(IGRAY_IMPL)
+TEMPLATE_STD(IGRAY_DEFINITION)
 
 // EXTRACT LEFT
 //     uint extlN(uint bits, uint mask) {
@@ -557,7 +554,7 @@ TEMPLATE_STD(IGRAY_IMPL)
 //
 //         return bits;
 //     }
-#define EXTL_IMPL(N)                                                                               \
+#define EXTL_DEFINITION(N)                                                                         \
     uint##N##_t extl##N(uint##N##_t bits, uint##N##_t mask) {                                      \
         bits &= mask;                                                                              \
         uint##N##_t m1 = (uint##N##_t) ~mask >> 1;                                                 \
@@ -577,7 +574,7 @@ TEMPLATE_STD(IGRAY_IMPL)
                                                                                                    \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXTL_IMPL)
+TEMPLATE_STD(EXTL_DEFINITION)
 
 // EXTRACT RIGHT
 //     uint extrN(uint bits, uint mask) {
@@ -599,7 +596,7 @@ TEMPLATE_STD(EXTL_IMPL)
 //
 //         return bits;
 //     }
-#define EXTR_IMPL(N)                                                                               \
+#define EXTR_DEFINITION(N)                                                                         \
     uint##N##_t extr##N(uint##N##_t bits, uint##N##_t mask) {                                      \
         bits &= mask;                                                                              \
         uint##N##_t m1 = ~mask << 1;                                                               \
@@ -619,7 +616,7 @@ TEMPLATE_STD(EXTL_IMPL)
                                                                                                    \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXTR_IMPL)
+TEMPLATE_STD(EXTR_DEFINITION)
 
 // DEPOSIT LEFT
 //     uint deplN(uint bits, uint mask) {
@@ -642,7 +639,7 @@ TEMPLATE_STD(EXTR_IMPL)
 //
 //         return bits & m0;
 //     }
-#define DEPL_IMPL(N)                                                                               \
+#define DEPL_DEFINITION(N)                                                                         \
     uint##N##_t depl##N(uint##N##_t bits, uint##N##_t mask) {                                      \
         uint##N##_t masks[LOG##N];                                                                 \
         uint##N##_t m0 = mask;                                                                     \
@@ -658,12 +655,12 @@ TEMPLATE_STD(EXTR_IMPL)
             m1 &= ~m;                                                                              \
         }                                                                                          \
                                                                                                    \
-        for (int i = LOG##N; i-- != 0;)                                                            \
+        for (int i = LOG##N; i--;)                                                                 \
             bits ^= ((bits ^ (bits << (ONE##N << i))) & masks[i]);                                 \
                                                                                                    \
         return bits & m0;                                                                          \
     }
-TEMPLATE_STD(DEPL_IMPL)
+TEMPLATE_STD(DEPL_DEFINITION)
 
 // DEPOSIT RIGHT
 //     uint deprN(uint bits, uint mask) {
@@ -686,7 +683,7 @@ TEMPLATE_STD(DEPL_IMPL)
 //
 //         return bits & m0;
 //     }
-#define DEPR_IMPL(N)                                                                               \
+#define DEPR_DEFINITION(N)                                                                         \
     uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask) {                                      \
         uint##N##_t masks[LOG##N];                                                                 \
         uint##N##_t m0 = mask;                                                                     \
@@ -702,29 +699,29 @@ TEMPLATE_STD(DEPL_IMPL)
             m1 &= ~m;                                                                              \
         }                                                                                          \
                                                                                                    \
-        for (int i = LOG##N; i-- != 0;)                                                            \
+        for (int i = LOG##N; i--;)                                                                 \
             bits ^= (bits ^ (bits >> (ONE##N << i))) & masks[i];                                   \
                                                                                                    \
         return bits & m0;                                                                          \
     }
-TEMPLATE_STD(DEPR_IMPL)
+TEMPLATE_STD(DEPR_DEFINITION)
 
 // GROUP
 //     uint grpN(uint bits, uint mask) {
 //         return extrN(bits, mask) | extlN(bits, ~mask);
 //     }
-#define GRP_IMPL(N)                                                                                \
+#define GRP_DEFINITION(N)                                                                          \
     uint##N##_t grp##N(uint##N##_t bits, uint##N##_t mask) {                                       \
         return extr##N(bits, mask) | extl##N(bits, ~mask);                                         \
     }
-TEMPLATE_STD(GRP_IMPL)
+TEMPLATE_STD(GRP_DEFINITION)
 
 // UNGROUP
 //     uint igrpN(uint bits, uint mask) {
 //         return deprN(bits, ~mask) | deplN(bits, mask);
 //     }
-#define IGRP_IMPL(N)                                                                               \
+#define IGRP_DEFINITION(N)                                                                         \
     uint##N##_t igrp##N(uint##N##_t bits, uint##N##_t mask) {                                      \
         return depr##N(bits, ~mask) | depl##N(bits, mask);                                         \
     }
-TEMPLATE_STD(IGRP_IMPL)
+TEMPLATE_STD(IGRP_DEFINITION)
