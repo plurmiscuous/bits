@@ -11,15 +11,15 @@ The two primary files are `c/bits.c` and the accompanying `c/bits.h`. The files 
 
 `c/bits.h` contains generic function declaration macros of the form
 ```C
-uint##N##_t func##N(uint##N##_t);
+uint##N##_t fn##N(uint##N##_t);
 ```
 which expand into declarations for each bit-width:
 ```C
-uint8_t func8(uint8_t);
-uint16_t func16(uint16_t);
-uint32_t func32(uint32_t);
-uint64_t func64(uint64_t);
-uint128_t func128(uint128_t);
+uint8_t fn8(uint8_t);
+uint16_t fn16(uint16_t);
+uint32_t fn32(uint32_t);
+uint64_t fn64(uint64_t);
+uint128_t fn128(uint128_t);
 ```
 
 ## N-bit Support
