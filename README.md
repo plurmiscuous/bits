@@ -3,7 +3,7 @@ Bits
 
 ## About
 
-Bits is a bit permutation/manipulation library written in both C and C++, separately.
+Bits is a bit permutation/manipulation library implemented in both C and C++.
 
 ## Usage
 
