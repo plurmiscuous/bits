@@ -11,6 +11,9 @@
 #include "../bits.h"
 #include "../inc/N.h"
 
+extern size_t NR;
+extern size_t NT;
+
 // NB: Tests for functions that return 'int' are storing results as 'uint' and
 // using the unsigned versions for comparisons. But this is happening for both
 // the library and naive implementations so conversions ought to be consistent.

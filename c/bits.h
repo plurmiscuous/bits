@@ -1,27 +1,19 @@
-#ifndef _BITC_H_
-#define _BITC_H_
+#ifndef _BITS_H_
+#define _BITS_H_
 
 #include <stdint.h>
 
 #include "inc/N.h"
 #include "inc/extint.h"
 
+// The ASSERT macro turns on run-time assertions for function arguments, such as
+// asserting that shift amounts are non-negative and within the width of data
+// type being operated on. NB: no assert() expressions produce side-effects.
 #define ASSERT 1
 
-/// DOCUMENTATION
-
-// FUNCTION NAME
-//      uint fn(uint bits);
-// DESCRIPTION:
-//      ....
-// PARAMETERS:
-//      bits: ...
-// RETURNS:
-//      ...
-
-// //////////////////////////////////
-// ////    STANDARD FUNCTIONS    ////
-// //////////////////////////////////
+//////////////////////////////////
+////    STANDARD FUNCTIONS    ////
+//////////////////////////////////
 
 //// CALCULATIONS
 
@@ -442,8 +434,8 @@ TEMPLATE_STD(DEPL_DECLARATION)
     uint##N##_t depr##N(uint##N##_t bits, uint##N##_t mask);
 TEMPLATE_STD(DEPR_DECLARATION)
 
-// //////////////////////////////////
-// ////    P-SQUARE FUNCTIONS    ////
-// //////////////////////////////////
+//////////////////////////////////
+////    P-SQUARE FUNCTIONS    ////
+//////////////////////////////////
 
-#endif // _BITC_H_
+#endif // _BITS_H_

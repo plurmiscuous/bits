@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include <assert.h>
-
 #include "bits.h"
 #include "testing/test_funcs.h"
 #include "testing/test_suite.h"
