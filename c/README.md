@@ -22,20 +22,15 @@ uint64_t func64(uint64_t);
 uint128_t func128(uint128_t);
 ```
 
-## Support
+## N-bit Support
 
 Currently bit-widths of 8, 16, 32, 64, and 128 are supported. The project is extensible to other word sizes that can be referenced through `uintN_t` type definitions, where `N` is the width.
 
 ### Extending
 
 The following must contain appropriate entries for new bit-widths:
-+ `inc/N.h`:
-    - LOGN, BITSN, and the other macros
-    - masks
-    - LFSR taps
-    - `TEMPLATE_*` macros
-+ `inc/extint.h`:
-    - `typedef`(s) for the `uintN_t` type(s), if necessary
++ `inc/N.h`: necessary macros, masks, values, and templating constructs
++ `inc/extint.h`: `typedef`s for any `uintN_t` type extensions
 
 ## Testing
 
