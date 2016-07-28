@@ -1,5 +1,5 @@
-#ifndef _KRYPTO_H_
-#define _KRYPTO_H_
+#ifndef _BITC_H_
+#define _BITC_H_
 
 #include <stdint.h>
 
@@ -329,19 +329,6 @@ TEMPLATE_STD(BFLY_DECLARATION)
     uint##N##_t ibfly##N(uint##N##_t bits, uint##N##_t mask);
 TEMPLATE_STD(IBFLY_DECLARATION)
 
-// BENES NETWORK
-//      uint benes(uint bits, uint mask, int log1, int log2);
-// PARAMETERS:
-//      bits: the bit array to permute
-//      mask:
-//      log1:
-//      log2:
-// RETURNS:
-//      -
-#define BENES_DECLARATION(N) \
-    uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2);
-TEMPLATE_STD(BENES_DECLARATION)
-
 // TRANSPOSE
 //      uint trans(uint bits, int rows);
 // PARAMETERS:
@@ -459,4 +446,4 @@ TEMPLATE_STD(DEPR_DECLARATION)
 // ////    P-SQUARE FUNCTIONS    ////
 // //////////////////////////////////
 
-#endif // _KRYPTO_H_
+#endif // _BITC_H_

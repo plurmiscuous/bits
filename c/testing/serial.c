@@ -2,24 +2,24 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "test_expect.h"
+#include "serial.h"
 
 #include "../bits.h"
 #include "../inc/extint.h"
 #include "../inc/N.h"
 #include "../util/print.h"
 
-#define EXPECT_POP_IMPL(N)                                                                         \
-    int expect_pop##N(uint##N##_t bits) {                                                          \
+#define SERIAL_POP_IMPL(N)                                                                         \
+    int serial_pop##N(uint##N##_t bits) {                                                          \
         int set = 0;                                                                               \
         for (set = 0; bits; bits >>= 1)                                                            \
             set += bits & 0x1;                                                                     \
         return set;                                                                                \
     }
-TEMPLATE_STD(EXPECT_POP_IMPL)
+TEMPLATE_STD(SERIAL_POP_IMPL)
 
-#define EXPECT_PAR_IMPL(N)                                                                         \
-    int expect_par##N(uint##N##_t bits) {                                                          \
+#define SERIAL_PAR_IMPL(N)                                                                         \
+    int serial_par##N(uint##N##_t bits) {                                                          \
         int parity = 0;                                                                            \
         while (bits) {                                                                             \
             parity = !parity;                                                                      \
@@ -27,10 +27,10 @@ TEMPLATE_STD(EXPECT_POP_IMPL)
         }                                                                                          \
         return parity;                                                                             \
     }
-TEMPLATE_STD(EXPECT_PAR_IMPL)
+TEMPLATE_STD(SERIAL_PAR_IMPL)
 
-#define EXPECT_CTZ_IMPL(N)                                                                         \
-    int expect_ctz##N(uint##N##_t bits) {                                                          \
+#define SERIAL_CTZ_IMPL(N)                                                                         \
+    int serial_ctz##N(uint##N##_t bits) {                                                          \
         if (!bits)                                                                                 \
             return BITS##N;                                                                        \
                                                                                                    \
@@ -42,10 +42,10 @@ TEMPLATE_STD(EXPECT_PAR_IMPL)
         }                                                                                          \
         return n;                                                                                  \
     }
-TEMPLATE_STD(EXPECT_CTZ_IMPL)
+TEMPLATE_STD(SERIAL_CTZ_IMPL)
 
-#define EXPECT_CLZ_IMPL(N)                                                                         \
-    int expect_clz##N(uint##N##_t bits) {                                                          \
+#define SERIAL_CLZ_IMPL(N)                                                                         \
+    int serial_clz##N(uint##N##_t bits) {                                                          \
         if (!bits)                                                                                 \
             return BITS##N;                                                                        \
                                                                                                    \
@@ -57,10 +57,10 @@ TEMPLATE_STD(EXPECT_CTZ_IMPL)
         }                                                                                          \
         return n;                                                                                  \
     }
-TEMPLATE_STD(EXPECT_CLZ_IMPL)
+TEMPLATE_STD(SERIAL_CLZ_IMPL)
 
-#define EXPECT_MXSET_IMPL(N)                                                                       \
-    int expect_mxset##N(uint##N##_t bits) {                                                        \
+#define SERIAL_MXSET_IMPL(N)                                                                       \
+    int serial_mxset##N(uint##N##_t bits) {                                                        \
         int set = 0;                                                                               \
         int max = 0;                                                                               \
                                                                                                    \
@@ -80,10 +80,10 @@ TEMPLATE_STD(EXPECT_CLZ_IMPL)
                                                                                                    \
         return max;                                                                                \
     }
-TEMPLATE_STD(EXPECT_MXSET_IMPL)
+TEMPLATE_STD(SERIAL_MXSET_IMPL)
 
-#define EXPECT_MNSET_IMPL(N)                                                                       \
-    int expect_mnset##N(uint##N##_t bits) {                                                        \
+#define SERIAL_MNSET_IMPL(N)                                                                       \
+    int serial_mnset##N(uint##N##_t bits) {                                                        \
         int set = 0;                                                                               \
         int min = 0;                                                                               \
                                                                                                    \
@@ -103,22 +103,22 @@ TEMPLATE_STD(EXPECT_MXSET_IMPL)
                                                                                                    \
         return min;                                                                                \
     }
-TEMPLATE_STD(EXPECT_MNSET_IMPL)
+TEMPLATE_STD(SERIAL_MNSET_IMPL)
 
-#define EXPECT_MAX_IMPL(N)                                                                         \
-    uint##N##_t expect_max##N(uint##N##_t x, uint##N##_t y) {                                      \
+#define SERIAL_MAX_IMPL(N)                                                                         \
+    uint##N##_t serial_max##N(uint##N##_t x, uint##N##_t y) {                                      \
         return x > y ? x : y;                                                                      \
     }
-TEMPLATE_STD(EXPECT_MAX_IMPL)
+TEMPLATE_STD(SERIAL_MAX_IMPL)
 
-#define EXPECT_MIN_IMPL(N)                                                                         \
-    uint##N##_t expect_min##N(uint##N##_t x, uint##N##_t y) {                                      \
+#define SERIAL_MIN_IMPL(N)                                                                         \
+    uint##N##_t serial_min##N(uint##N##_t x, uint##N##_t y) {                                      \
         return x < y ? x : y;                                                                      \
     }
-TEMPLATE_STD(EXPECT_MIN_IMPL)
+TEMPLATE_STD(SERIAL_MIN_IMPL)
 
-#define EXPECT_GCD_IMPL(N)                                                                         \
-    uint##N##_t expect_gcd##N(uint##N##_t x, uint##N##_t y) {                                      \
+#define SERIAL_GCD_IMPL(N)                                                                         \
+    uint##N##_t serial_gcd##N(uint##N##_t x, uint##N##_t y) {                                      \
         while (x != 0) {                                                                           \
             uint##N##_t tmp = x;                                                                   \
             x = y % x;                                                                             \
@@ -126,29 +126,29 @@ TEMPLATE_STD(EXPECT_MIN_IMPL)
         }                                                                                          \
         return y;                                                                                  \
     }
-TEMPLATE_STD(EXPECT_GCD_IMPL)
+TEMPLATE_STD(SERIAL_GCD_IMPL)
 
-#define EXPECT_LB_IMPL(N)                                                                          \
-    uint##N##_t expect_lb##N(uint##N##_t bits) {                                                   \
+#define SERIAL_LB_IMPL(N)                                                                          \
+    uint##N##_t serial_lb##N(uint##N##_t bits) {                                                   \
         int log = 0;                                                                               \
         while (bits >>= 1)                                                                         \
             ++log;                                                                                 \
         return log;                                                                                \
     }
-TEMPLATE_STD(EXPECT_LB_IMPL)
+TEMPLATE_STD(SERIAL_LB_IMPL)
 
-#define EXPECT_IPOW_IMPL(N)                                                                        \
-    int expect_ipow##N(uint##N##_t bits) {                                                         \
+#define SERIAL_IPOW_IMPL(N)                                                                        \
+    int serial_ipow##N(uint##N##_t bits) {                                                         \
         uint##N##_t b0 = bits;                                                                     \
         for (int i = 1; i < BITS##N; i <<= 1)                                                      \
             bits |= bits >> i;                                                                     \
         bits = (bits >> 1) + 1;                                                                    \
         return bits == b0;                                                                         \
     }
-TEMPLATE_STD(EXPECT_IPOW_IMPL)
+TEMPLATE_STD(SERIAL_IPOW_IMPL)
 
-#define EXPECT_CPOW_IMPL(N)                                                                        \
-    uint##N##_t expect_cpow##N(uint##N##_t bits) {                                                 \
+#define SERIAL_CPOW_IMPL(N)                                                                        \
+    uint##N##_t serial_cpow##N(uint##N##_t bits) {                                                 \
         if (!bits)                                                                                 \
             return 1;                                                                              \
                                                                                                    \
@@ -158,19 +158,19 @@ TEMPLATE_STD(EXPECT_IPOW_IMPL)
         bits = (bits >> 1) + 1;                                                                    \
         return bits == b0 ? b0 : (bits << 1);                                                      \
     }
-TEMPLATE_STD(EXPECT_CPOW_IMPL)
+TEMPLATE_STD(SERIAL_CPOW_IMPL)
 
-#define EXPECT_FPOW_IMPL(N)                                                                        \
-    uint##N##_t expect_fpow##N(uint##N##_t bits) {                                                 \
+#define SERIAL_FPOW_IMPL(N)                                                                        \
+    uint##N##_t serial_fpow##N(uint##N##_t bits) {                                                 \
         for (int i = 1; i < BITS##N; i <<= 1)                                                      \
             bits |= bits >> i;                                                                     \
         bits = (bits >> 1) + (bits != 0);                                                          \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_FPOW_IMPL)
+TEMPLATE_STD(SERIAL_FPOW_IMPL)
 
-#define EXPECT_LSB_IMPL(N)                                                                         \
-    uint##N##_t expect_lsb##N(uint##N##_t bits) {                                                  \
+#define SERIAL_LSB_IMPL(N)                                                                         \
+    uint##N##_t serial_lsb##N(uint##N##_t bits) {                                                  \
         if (!bits)                                                                                 \
             return bits;                                                                           \
                                                                                                    \
@@ -181,10 +181,10 @@ TEMPLATE_STD(EXPECT_FPOW_IMPL)
         }                                                                                          \
         return ONE##N << i;                                                                        \
     }
-TEMPLATE_STD(EXPECT_LSB_IMPL)
+TEMPLATE_STD(SERIAL_LSB_IMPL)
 
-#define EXPECT_MSB_IMPL(N)                                                                         \
-    uint##N##_t expect_msb##N(uint##N##_t bits) {                                                  \
+#define SERIAL_MSB_IMPL(N)                                                                         \
+    uint##N##_t serial_msb##N(uint##N##_t bits) {                                                  \
         if (!bits)                                                                                 \
             return bits;                                                                           \
                                                                                                    \
@@ -193,41 +193,41 @@ TEMPLATE_STD(EXPECT_LSB_IMPL)
             ++i;                                                                                   \
         return ONE##N << i;                                                                        \
     }
-TEMPLATE_STD(EXPECT_MSB_IMPL)
+TEMPLATE_STD(SERIAL_MSB_IMPL)
 
-#define EXPECT_REV_IMPL(N)                                                                         \
-    uint##N##_t expect_rev##N(uint##N##_t bits) {                                                  \
+#define SERIAL_REV_IMPL(N)                                                                         \
+    uint##N##_t serial_rev##N(uint##N##_t bits) {                                                  \
         uint##N##_t rev = 0;                                                                       \
         for (size_t i = 0; i < BITS##N - 1; ++i, rev <<= 1, bits >>= 1)                            \
             rev |= bits & 0x1;                                                                     \
         rev |= bits & 0x1;                                                                         \
         return rev;                                                                                \
     }
-TEMPLATE_STD(EXPECT_REV_IMPL)
+TEMPLATE_STD(SERIAL_REV_IMPL)
 
-#define EXPECT_SHUF_IMPL(N)                                                                        \
-    uint##N##_t expect_shuf##N(uint##N##_t bits) {                                                 \
-        uint##N##_t lo = bits & UNIT##N[0];                                                        \
-        uint##N##_t hi = (bits >> (BITS##N / 2)) & UNIT##N[0];                                     \
+#define SERIAL_SHUF_IMPL(N)                                                                        \
+    uint##N##_t serial_shuf##N(uint##N##_t bits) {                                                 \
+        uint##N##_t lo = bits;                                                                     \
+        uint##N##_t hi = (bits >> (BITS##N / 2));                                                  \
         uint##N##_t shuf = 0;                                                                      \
         for (size_t i = 0; i < BITS##N / 2; ++i)                                                   \
             shuf |= (lo & ONE##N << i) << i | (hi & ONE##N << i) << (i + 1);                       \
         return shuf;                                                                               \
     }
-TEMPLATE_STD(EXPECT_SHUF_IMPL)
+TEMPLATE_STD(SERIAL_SHUF_IMPL)
 
-#define EXPECT_ISHUF_IMPL(N)                                                                       \
-    uint##N##_t expect_ishuf##N(uint##N##_t bits) {                                                \
+#define SERIAL_ISHUF_IMPL(N)                                                                       \
+    uint##N##_t serial_ishuf##N(uint##N##_t bits) {                                                \
         uint##N##_t one = 1;                                                                       \
-        uint##N##_t lo = bits & UNIT##N[1];                                                        \
-        uint##N##_t hi = bits & ~UNIT##N[1];                                                       \
+        uint##N##_t lo = bits & WORD##N[0];                                                        \
+        uint##N##_t hi = bits & ~WORD##N[0];                                                       \
         uint##N##_t ishuf = 0;                                                                     \
         for (size_t i = 0; i < BITS##N / 2; ++i)                                                   \
             ishuf |= ((hi & one << (2 * i + 1)) << (BITS##N / 2 - 1 - i))                          \
                     | ((lo & one << (2 * i)) >> i);                                                \
         return ishuf;                                                                              \
     }
-TEMPLATE_STD(EXPECT_ISHUF_IMPL)
+TEMPLATE_STD(SERIAL_ISHUF_IMPL)
 
 // Group:
 //     Pseudocode for the GRP operation:
@@ -245,11 +245,11 @@ TEMPLATE_STD(EXPECT_ISHUF_IMPL)
 // Source:
 //     Ruby B. Lee, Zhijie Jerry Shi, Xiao Yang; Efficient Permutation
 //         Instructions for Fast Software Cryptography
-//     url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
+//         url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
 //     Ruby B. Lee, Zhijie Jerry Shi; US Patent No. 7174014
-//     url: http://patentimages.storage.googleapis.com/pdfs/US7174014.pdf
-#define EXPECT_GRP_IMPL(N)                                                                         \
-    uint##N##_t expect_grp##N(uint##N##_t bits, uint##N##_t mask) {                                \
+//         url: http://patentimages.storage.googleapis.com/pdfs/US7174014.pdf
+#define SERIAL_GRP_IMPL(N)                                                                         \
+    uint##N##_t serial_grp##N(uint##N##_t bits, uint##N##_t mask) {                                \
         uint##N##_t grp = 0;                                                                       \
         int k = 0;                                                                                 \
                                                                                                    \
@@ -284,10 +284,10 @@ TEMPLATE_STD(EXPECT_ISHUF_IMPL)
 // Source:
 //     Zhijie Jerry Shi; Bit Permutation Instructions: Architecture,
 //         Implementation, and Cryptographic Properties
-//     url: http://saluc.engr.uconn.edu/publications/shi_thesis.pdf
-TEMPLATE_STD(EXPECT_GRP_IMPL)
-#define EXPECT_IGRP_IMPL(N)                                                                        \
-    uint##N##_t expect_igrp##N(uint##N##_t bits, uint##N##_t mask) {                               \
+//         url: http://saluc.engr.uconn.edu/publications/shi_thesis.pdf
+TEMPLATE_STD(SERIAL_GRP_IMPL)
+#define SERIAL_IGRP_IMPL(N)                                                                        \
+    uint##N##_t serial_igrp##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t igrp = 0;                                                                      \
                                                                                                    \
         uint##N##_t m1 = mask;                                                                     \
@@ -310,7 +310,7 @@ TEMPLATE_STD(EXPECT_GRP_IMPL)
                                                                                                    \
         return igrp;                                                                               \
     }
-TEMPLATE_STD(EXPECT_IGRP_IMPL)
+TEMPLATE_STD(SERIAL_IGRP_IMPL)
 
 // Omega-Flip:
 //     Pseudocode for the OMFLIP operation:
@@ -333,9 +333,9 @@ TEMPLATE_STD(EXPECT_IGRP_IMPL)
 //         }
 // Source:
 //     Ruby B. Lee and Xiao Yang; US Patent No. 6952478
-//     url: http://patentimages.storage.googleapis.com/pdfs/US6952478.pdf
-#define EXPECT_OMFLIP_IMPL(N)                                                                      \
-    uint##N##_t expect_omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {               \
+//         url: http://patentimages.storage.googleapis.com/pdfs/US6952478.pdf
+#define SERIAL_OMFLIP_IMPL(N)                                                                      \
+    uint##N##_t serial_omflip##N(uint##N##_t bits, uint##N##_t mask, uint8_t opts) {               \
         uint##N##_t omflip = 0;                                                                    \
         for (int i = 0; i < 2; ++i) {                                                              \
             uint##N##_t tmp = 0;                                                                   \
@@ -358,7 +358,7 @@ TEMPLATE_STD(EXPECT_IGRP_IMPL)
         }                                                                                          \
         return omflip;                                                                             \
     }
-TEMPLATE_STD(EXPECT_OMFLIP_IMPL)
+TEMPLATE_STD(SERIAL_OMFLIP_IMPL)
 
 // Butterfly Network:
 //     Pseudocode for the BFLY operation:
@@ -375,9 +375,9 @@ TEMPLATE_STD(EXPECT_OMFLIP_IMPL)
 //     Ruby B. Lee, Zhijie Jerry Shi, Xiao Yang; Efficient Permutation
 //         Instructions for Fast Software Cryptography (Adapted from CROSS
 //         pseudocode)
-//     url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
-#define EXPECT_BFLY_IMPL(N)                                                                        \
-    uint##N##_t expect_bfly##N(uint##N##_t bits, uint##N##_t mask) {                               \
+//         url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
+#define SERIAL_BFLY_IMPL(N)                                                                        \
+    uint##N##_t serial_bfly##N(uint##N##_t bits, uint##N##_t mask) {                               \
         for (int d = BITS##N / 2; d > 0; d /= 2)                                                   \
             for (int k = 0; k < BITS##N; k += (d << 1))                                            \
                 for (int j = 0; j < d; ++j)                                                        \
@@ -385,10 +385,10 @@ TEMPLATE_STD(EXPECT_OMFLIP_IMPL)
                         bits = bswap##N(bits, k + j, k + j + d);                                   \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_BFLY_IMPL)
+TEMPLATE_STD(SERIAL_BFLY_IMPL)
 
-#define EXPECT_IBFLY_IMPL(N)                                                                       \
-    uint##N##_t expect_ibfly##N(uint##N##_t bits, uint##N##_t mask) {                              \
+#define SERIAL_IBFLY_IMPL(N)                                                                       \
+    uint##N##_t serial_ibfly##N(uint##N##_t bits, uint##N##_t mask) {                              \
         for (int d = 1; d <= BITS##N / 2; d *= 2)                                                  \
             for (int k = BITS##N - (d << 1); k >= 0; k -= (d << 1))                                \
                 for (int j = d - 1; j >= 0; --j)                                                   \
@@ -396,29 +396,15 @@ TEMPLATE_STD(EXPECT_BFLY_IMPL)
                         bits = bswap##N(bits, k + j, k + j + d);                                   \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_IBFLY_IMPL)
-
-#define EXPECT_BENES_IMPL(N)                                                                       \
-    uint##N##_t expect_benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2) {          \
-        int d = 1 << log1;                                                                         \
-        for (int k = 0; k < BITS##N; k += (d << 1))                                                \
-            for (int j = 0; j < d; ++j)                                                            \
-                if (mask >> (k + j) & 0x1)                                                         \
-                    bits = bswap##N(bits, k + j, k + j + d);                                       \
-        d = 1 << log2;                                                                             \
-        for (int k = 0; k < BITS##N; k += (d << 1))                                                \
-            for (int j = 0; j < d; ++j)                                                            \
-                if (mask >> (k + j) & 0x1)                                                         \
-                    bits = bswap##N(bits, k + j, k + j + d);                                       \
-        return bits;                                                                               \
-    }
-TEMPLATE_STD(EXPECT_BENES_IMPL)
+TEMPLATE_STD(SERIAL_IBFLY_IMPL)
 
 // Source:
 //     Bit manipulations using BMI2
-//     url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
-#define EXPECT_EXTR_IMPL(N)                                                                        \
-    uint##N##_t expect_extr##N(uint##N##_t bits, uint##N##_t mask) {                               \
+//         url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
+//     BMI2
+//         url: https://chessprogramming.wikispaces.com/BMI2
+#define SERIAL_EXTR_IMPL(N)                                                                        \
+    uint##N##_t serial_extr##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
         int k = 0;                                                                                 \
                                                                                                    \
@@ -428,13 +414,15 @@ TEMPLATE_STD(EXPECT_BENES_IMPL)
                                                                                                    \
         return res;                                                                                \
     }
-TEMPLATE_STD(EXPECT_EXTR_IMPL)
+TEMPLATE_STD(SERIAL_EXTR_IMPL)
 
 // Source:
 //     Bit manipulations using BMI2
-//     url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
-#define EXPECT_DEPL_IMPL(N)                                                                        \
-    uint##N##_t expect_depl##N(uint##N##_t bits, uint##N##_t mask) {                               \
+//         url: https://www.randombit.net/bitbashing/2012/06/22/haswell_bit_permutations.html
+//     BMI2
+//         url: https://chessprogramming.wikispaces.com/BMI2
+#define SERIAL_DEPL_IMPL(N)                                                                        \
+    uint##N##_t serial_depl##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
         int k = 0;                                                                                 \
                                                                                                    \
@@ -444,10 +432,10 @@ TEMPLATE_STD(EXPECT_EXTR_IMPL)
                                                                                                    \
         return res;                                                                                \
     }
-TEMPLATE_STD(EXPECT_DEPL_IMPL)
+TEMPLATE_STD(SERIAL_DEPL_IMPL)
 
-#define EXPECT_EXTL_IMPL(N)                                                                        \
-    uint##N##_t expect_extl##N(uint##N##_t bits, uint##N##_t mask) {                               \
+#define SERIAL_EXTL_IMPL(N)                                                                        \
+    uint##N##_t serial_extl##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
         int k = BITS##N;                                                                           \
         for (int i = BITS##N; i--;)                                                                \
@@ -455,10 +443,10 @@ TEMPLATE_STD(EXPECT_DEPL_IMPL)
                 res |= (bits >> i & 0x1) << --k;                                                   \
         return res;                                                                                \
     }
-TEMPLATE_STD(EXPECT_EXTL_IMPL)
+TEMPLATE_STD(SERIAL_EXTL_IMPL)
 
-#define EXPECT_DEPR_IMPL(N)                                                                        \
-    uint##N##_t expect_depr##N(uint##N##_t bits, uint##N##_t mask) {                               \
+#define SERIAL_DEPR_IMPL(N)                                                                        \
+    uint##N##_t serial_depr##N(uint##N##_t bits, uint##N##_t mask) {                               \
         uint##N##_t res = 0;                                                                       \
         int k = BITS##N;                                                                           \
                                                                                                    \
@@ -468,43 +456,43 @@ TEMPLATE_STD(EXPECT_EXTL_IMPL)
                                                                                                    \
         return res;                                                                                \
     }
-TEMPLATE_STD(EXPECT_DEPR_IMPL)
+TEMPLATE_STD(SERIAL_DEPR_IMPL)
 
 // Source:
 //     Inplace (Fixed space) M x N size matrix transpose
-//     url: http://www.geeksforgeeks.org/inplace-m-x-n-size-matrix-transpose/
-#define EXPECT_TRANS_IMPL(N)                                                                       \
-    uint##N##_t expect_trans##N(uint##N##_t bits, int rows) {                                      \
+//         url: http://www.geeksforgeeks.org/inplace-m-x-n-size-matrix-transpose/
+#define SERIAL_TRANS_IMPL(N)                                                                       \
+    uint##N##_t serial_trans##N(uint##N##_t bits, int rows) {                                      \
         int cols = N / rows;                                                                       \
         for (int i = 0; i < rows * cols; i++) {                                                    \
             int j = i;                                                                             \
             do                                                                                     \
                 j = (j % rows) * cols + (j / rows);                                                \
             while (j < i);                                                                         \
-            bits = expect_bswap##N(bits, i, j);                                                    \
+            bits = serial_bswap##N(bits, i, j);                                                    \
         }                                                                                          \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_TRANS_IMPL)
+TEMPLATE_STD(SERIAL_TRANS_IMPL)
 
-#define EXPECT_ROL_IMPL(N)                                                                         \
-    uint##N##_t expect_rol##N(uint##N##_t bits, int rot) {                                         \
+#define SERIAL_ROL_IMPL(N)                                                                         \
+    uint##N##_t serial_rol##N(uint##N##_t bits, int rot) {                                         \
         for (int i = rot; i--;)                                                                    \
             bits = (bits << 1) | (bits >> (N - 1));                                                \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_ROL_IMPL)
+TEMPLATE_STD(SERIAL_ROL_IMPL)
 
-#define EXPECT_ROR_IMPL(N)                                                                         \
-    uint##N##_t expect_ror##N(uint##N##_t bits, int rot) {                                         \
+#define SERIAL_ROR_IMPL(N)                                                                         \
+    uint##N##_t serial_ror##N(uint##N##_t bits, int rot) {                                         \
         for (int i = rot; i--;)                                                                    \
             bits = (bits >> 1) | (bits << (N - 1));                                                \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_ROR_IMPL)
+TEMPLATE_STD(SERIAL_ROR_IMPL)
 
-#define EXPECT_BSWAP_IMPL(N)                                                                       \
-    uint##N##_t expect_bswap##N(uint##N##_t bits, int i, int j) {                                  \
+#define SERIAL_BSWAP_IMPL(N)                                                                       \
+    uint##N##_t serial_bswap##N(uint##N##_t bits, int i, int j) {                                  \
         assert(0 <= i && i < N);                                                                   \
         assert(0 <= j && j < N);                                                                   \
         uint##N##_t biti = (bits >> i) & 0x1;                                                      \
@@ -513,10 +501,10 @@ TEMPLATE_STD(EXPECT_ROR_IMPL)
         bits |= (biti << j) | (bitj << i);                                                         \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_BSWAP_IMPL)
+TEMPLATE_STD(SERIAL_BSWAP_IMPL)
 
-#define EXPECT_RSWAP_IMPL(N)                                                                       \
-    uint##N##_t expect_rswap##N(uint##N##_t bits, int i, int j, int len) {                         \
+#define SERIAL_RSWAP_IMPL(N)                                                                       \
+    uint##N##_t serial_rswap##N(uint##N##_t bits, int i, int j, int len) {                         \
         assert(0 <= i && i < BITS##N);                                                             \
         assert(0 <= j && j < BITS##N);                                                             \
         assert(0 <= len && i + len <= BITS##N && j + len <= BITS##N);                              \
@@ -528,6 +516,6 @@ TEMPLATE_STD(EXPECT_BSWAP_IMPL)
         bits |= (ri << j) | (rj << i);                                                             \
         return bits;                                                                               \
     }
-TEMPLATE_STD(EXPECT_RSWAP_IMPL)
+TEMPLATE_STD(SERIAL_RSWAP_IMPL)
 
 

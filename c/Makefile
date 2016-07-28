@@ -3,46 +3,50 @@ CFLAGS := -g -Ofast -std=c11
 WFLAGS := -Wall -Werror -Wextra -Wpedantic -Wfatal-errors
 FFLAGS := -floop-optimize -funroll-loops
 
-AR := libtool -static
+# AR := libtool -static
 
 OBJD := obj
 TEST := test
-OBJS := $(OBJD)/bits.o 				\
-		$(OBJD)/print.o 			\
-		$(OBJD)/random.o 			\
-		$(OBJD)/timer.o 			\
-		$(OBJD)/random.o 			\
-		$(OBJD)/test_expect.o 		\
-		$(OBJD)/test_funcs.o 		\
+OBJS := $(OBJD)/bits.o              \
+		$(OBJD)/print.o             \
+		$(OBJD)/random.o            \
+		$(OBJD)/timer.o             \
+		$(OBJD)/random.o            \
+		$(OBJD)/serial.o            \
+		$(OBJD)/test_funcs.o        \
 		$(OBJD)/test_suite.o
-HEAD := inc/extint.h 				\
+HEAD := inc/extint.h                \
 		inc/N.h
 
 .PRECIOUS: $(OBJD)/%.o
 
-all: lib $(TEST)
+all: $(TEST)
 
 run: $(TEST)
 	@echo ""
 	./$(TEST)
 
-lib: $(OBJD)/bits.o
-	$(AR) -o libbits.a $<
+# lib: $(OBJD)/bitc.o
+# 	$(AR) -o libbits.a $<
 
 $(TEST): $(OBJD)/$(TEST).o $(OBJS)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -o $@ $^
 
 $(OBJD)/$(TEST).o: $(TEST).c $(HEAD)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
 $(OBJD)/%.o: %.c %.h $(HEAD)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
-$(OBJD)/%.o: util/%.c $(HEAD)
+$(OBJD)/%.o: util/%.c util/%.h $(HEAD)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
-$(OBJD)/%.o: bittest/%.c bittest/%.h $(HEAD)
+$(OBJD)/%.o: testing/%.c testing/%.h $(HEAD)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
 clean:
-	/bin/rm -rf *~ $(OBJD)/* $(TEST) libbits.a *.dSYM
+	/bin/rm -rf *~ $(OBJD) $(TEST) *.dSYM

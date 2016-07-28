@@ -5,6 +5,14 @@
 #include "../inc/extint.h"
 #include "../inc/N.h"
 
+// Customized PRNG. Based on modified Marsaglia xorshift generators.
+//
+// NB: The modifications were made because 128-bit output from the standard
+//     1024star function never had the highest 3 bits set. Setting the 65th bit
+//     of the state and multiplier 'seems' to provide a decent distribution of
+//     hex values for the highest half-octet. The modified functions have not
+//     been evaluated using any standard tests.
+
 static uint64_t state_64[2];
 
 static uint64_t xorshift128plus(void) {
@@ -22,8 +30,8 @@ static uint64_t state_1024star[16];
 static int p;
 
 // the 65th bit of the multiplier is set, which is not in the original
-// implementation; w/o this bit, the highest 3 bits (usually 4 bits) of rand128
-// are not set
+// implementation; w/o this bit, the highest 3 bits (usually 4 bits) of
+// rand128() are not set
 static const uint128_t mult = u128(0x1, 0x106689D45497FDB5);
 
 static uint128_t xorshift1024star(void) {
@@ -36,7 +44,7 @@ static uint128_t xorshift1024star(void) {
     state_1024star[p] = s0 ^ s1;
     // the 65th bit of the multiplicand is set, which is not in the original
     // implementation; this is to provide a higher variety of hex values in the
-    // highest 4 bits of rand128's output
+    // highest 4 bits of rand128()'s output
     return u128(0x1, state_1024star[p]) * mult;
 }
 
@@ -47,15 +55,19 @@ static uint128_t xorshift1024star(void) {
 TEMPLATE_STD(RAND_IMPL)
 
 void init_rand(void) {
+    // fill the state of the 128plus generator
     state_64[0] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
     state_64[1] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
 
+    // throw away some 128plus output
     for (size_t i = 0x0; i < 0x4; ++i)
         while ((xorshift128plus() & 0x3) != i);
 
+    // fill the state of the 1024plus generator using 128plus output
     for (uint8_t i = 0; i < 16; ++i)
         state_1024star[i] = xorshift128plus();
 
+    // throw away some 1024plus output
     for (size_t i = 0x0; i < 0x4; ++i)
         while ((xorshift128plus() & 0x3) != i);
 }

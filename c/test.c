@@ -6,8 +6,8 @@
 #include <assert.h>
 
 #include "bits.h"
-#include "bittest/test_funcs.h"
-#include "bittest/test_suite.h"
+#include "testing/test_funcs.h"
+#include "testing/test_suite.h"
 
 int main(void) {
       init_suite(DISPLAY_DIFF_ON);
@@ -43,7 +43,6 @@ int main(void) {
 
       test_omflip();
       test_bfly();
-      // test_benes();
 
       test_gray();
       test_lfsr();

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#include "test_expect.h"
+#include "serial.h"
 #include "test_funcs.h"
 #include "test_suite.h"
 
@@ -166,15 +166,15 @@ void term_suite(void) {
 }
 
 #define TEST_IMPL(N)                                                                                                   \
-    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {                \
+    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t serialed, uint##N##_t actual) {                \
         init_test_check();                                                                                             \
         test_count();                                                                                                  \
                                                                                                                        \
-        if (expected != actual) {                                                                                      \
+        if (serialed != actual) {                                                                                      \
             if (print_diff) {                                                                                          \
-                printf("\t\terror: %s%d() did not produce the expected output\n", fn, N);                              \
+                printf("\t\terror: %s%d() did not produce the serialed output\n", fn, N);                              \
                 printf("\t\t\tinput:    " FMT##N "\n", print##N(input));                                               \
-                printf("\t\t\texpected: " FMT##N "\n", print##N(expected));                                            \
+                printf("\t\t\tserialed: " FMT##N "\n", print##N(serialed));                                            \
                 printf("\t\t\tactual:   " FMT##N "\n", print##N(actual));                                              \
             }                                                                                                          \
             error();                                                                                                   \
@@ -199,8 +199,8 @@ void term_suite(void) {
         init_test_check();                                                                                             \
         test_count();                                                                                                  \
                                                                                                                        \
-        int ipop = expect_pop##N(input);                                                                               \
-        int opop = expect_pop##N(output);                                                                              \
+        int ipop = serial_pop##N(input);                                                                               \
+        int opop = serial_pop##N(output);                                                                              \
         if(ipop != opop) {                                                                                             \
             if (print_diff) {                                                                                          \
                 printf("\t\terror: permutation %s%d() does not preserve set bit count\n", fn, N);                      \

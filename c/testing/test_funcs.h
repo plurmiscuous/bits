@@ -26,7 +26,6 @@ void test_rev(void);
 void test_shuf(void);
 void test_omflip(void);
 void test_bfly(void);
-void test_benes(void);
 void test_grp(void);
 void test_extr(void);
 void test_extl(void);

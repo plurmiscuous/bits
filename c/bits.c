@@ -96,7 +96,7 @@ TEMPLATE_STD(CTZ_DEFINITION)
 #define CLZ_DEFINITION(N)                                                                          \
     int clz##N(uint##N##_t bits) {                                                                 \
         int n = 0;                                                                                 \
-        uint##N##_t mask = NEG##N >> (BITS##N >> 1);                                               \
+        uint##N##_t mask = WORD##N[LOG##N - 1];                                                    \
         for (int i = BITS##N; (i >>= 1) != 0;) {                                                   \
             if (bits <= mask) {                                                                    \
                 n += i;                                                                            \
@@ -284,10 +284,10 @@ TEMPLATE_STD(ROR_DEFINITION)
 TEMPLATE_STD(DELTA_DEFINITION)
 
 // SWAPPING INDIVIDUAL BITS
-    // uint bswpN(uint bits, int i, int j) {
-    //     uint tmp = ((bits >> i) ^ (bits >> j)) & 1;
-    //     return bits ^ ((tmp << i) | (tmp << j));
-    // }
+//     uint bswpN(uint bits, int i, int j) {
+//         uint tmp = ((bits >> i) ^ (bits >> j)) & 1;
+//         return bits ^ ((tmp << i) | (tmp << j));
+//     }
 #define BSWAP_DEFINITION(N)                                                                        \
     uint##N##_t bswap##N(uint##N##_t bits, int i, int j) {                                         \
         assert(0 <= i && i < BITS##N);                                                             \
@@ -412,22 +412,6 @@ TEMPLATE_STD(BFLY_DEFINITION)
         return bits;                                                                               \
     }
 TEMPLATE_STD(IBFLY_DEFINITION)
-
-// BENES NETWORK
-//     uint benesN(uint bits, uint mask, int log1, int log2) {
-//         bits = deltaN(bits, mask & WORD[log1], 1 << log1);
-//         bits = deltaN(bits, mask & WORD[log2], 1 << log2);
-//         return bits;
-//     }
-#define BENES_DEFINITION(N)                                                                        \
-    uint##N##_t benes##N(uint##N##_t bits, uint##N##_t mask, int log1, int log2) {                 \
-        assert(0 <= log1 && log1 < LOG##N);                                                        \
-        assert(0 <= log2 && log2 < LOG##N);                                                        \
-        bits = delta##N(bits, mask & WORD##N[log1], 1 << log1);                                    \
-        bits = delta##N(bits, mask & WORD##N[log2], 1 << log2);                                    \
-        return bits;                                                                               \
-    }
-TEMPLATE_STD(BENES_DEFINITION)
 
 // MATRIX TRANSPOSE
 //     uint transN(uint bits, int rows) {

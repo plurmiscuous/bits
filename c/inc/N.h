@@ -176,11 +176,22 @@ static const uint128_t SHUF128[] = {
     u128(0x0000000000000000, 0xFFFFFFFF00000000)
 };
 
-static const uint128_t TRANS128[] = {
-    u128(0x00AA00AA00AA00AA, 0x00AA00AA00AA00AA),
-    u128(0x0000CCCC0000CCCC, 0x0000CCCC0000CCCC),
-    u128(0x00000000F0F0F0F0, 0x00000000F0F0F0F0)
+static const uint16_t TRANS16[] = {
+    0x0A0A,
+    0x00CC
 };
+
+static const uint64_t TRANS64[] = {
+    0x00AA00AA00AA00AA,
+    0x0000CCCC0000CCCC,
+    0x00000000F0F0F0F0
+};
+
+// static const uint128_t TRANS128[] = {
+//     u128(0x00AA00AA00AA00AA, 0x00AA00AA00AA00AA),
+//     u128(0x0000CCCC0000CCCC, 0x0000CCCC0000CCCC),
+//     u128(0x00000000F0F0F0F0, 0x00000000F0F0F0F0)
+// };
 
 //////////////////////////////////
 ////        LFSR TAPS         ////
@@ -230,8 +241,11 @@ static const uint128_t TRANS128[] = {
  *      }
  */
 
-#define TEMPLATE_STD(T)     T(8) T(16) T(32) T(64) T(128)
-#define TEMPLATE_SQR(T)     T(4) T(16) T(64)
+#define TEMPLATE_STD(T)      T(8) T(16) T(32) T(64) T(128)
+#define TEMPLATE_SQR(T)           T(16)       T(64)
+
+#define TEMPLATE_STD_SIMD128(T) T(4) T(8) T(16) T(32) T(64)
+#define TEMPLATE_SQR_SIMD128(T) T(4)      T(16)       T(64)
 
 #define TEMPLATE_STD_TEST(TEST, func)                \
     TEST(  8, func)                                  \
