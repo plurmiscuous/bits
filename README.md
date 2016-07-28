@@ -3,13 +3,15 @@ Bits
 
 ## About
 
-Bits is a bit permutation/manipulation library.
+Bits is a bit permutation/manipulation library written in both C and C++, separately.
 
 ## Usage
 
-The two primary files are `bits.c` and the accompanying `bits.h`. The files in the `inc/` directory are required for compilation.
+### C
 
-`bits.h` contains generic function declaration macros of the form
+The two primary files are `c/bits.c` and the accompanying `c/bits.h`. The files in the `c/inc/` directory are required for compilation.
+
+`c/bits.h` contains generic function declaration macros of the form
 ```C
 uint##N##_t func##N(uint##N##_t);
 ```
@@ -21,6 +23,10 @@ uint32_t func32(uint32_t);
 uint64_t func64(uint64_t);
 uint128_t func128(uint128_t);
 ```
+
+### C++
+
+The library is in `cc/bits.hh` a single-include header file. The files in the `cc/inc/`
 
 ## Support
 
