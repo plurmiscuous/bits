@@ -1,14 +1,16 @@
 #ifndef _PRINT_H_
 #define _PRINT_H_
 
+#include <inttypes.h>
+
 #include "../inc/extint.h"
 
 // Format macros for use in templates along with print*
-#define FMT8    "0x%02hhX"
-#define FMT16   "0x%04hX"
-#define FMT32   "0x%08X"
-#define FMT64   "0x%016llX"
-#define FMT128  "0x%016llX%016llX"
+#define FMT8    "0x%02"PRIX8""
+#define FMT16   "0x%04"PRIX16""
+#define FMT32   "0x%08"PRIX32""
+#define FMT64   "0x%016"PRIX64""
+#define FMT128  "0x%016"PRIX64"%016"PRIX64""
 
 // Printing macros for use in templates along with FMT*
 #define print8(u8)      (u8)
@@ -24,6 +26,7 @@
 //      cols: the number of columns in the matrix
 void printMxN(void* matrix, int rows, int cols);
 
+// Format macro for printing the output of bitstr*
 #define FMTBSTR "0b%s"
 
 // Prints the binary representation of an unsigned integer value.

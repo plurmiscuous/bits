@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "random.h"
 #include "../inc/extint.h"
@@ -32,7 +33,7 @@ static int p;
 // the 65th bit of the multiplier is set, which is not in the original
 // implementation; w/o this bit, the highest 3 bits (usually 4 bits) of
 // rand128() are not set
-static const uint128_t mult = u128(0x1, 0x106689D45497FDB5);
+static const uint128_t mult = U128(0x1, 0x106689D45497FDB5);
 
 static uint128_t xorshift1024star(void) {
     uint64_t s0 = state_1024star[p];
@@ -45,7 +46,7 @@ static uint128_t xorshift1024star(void) {
     // the 65th bit of the multiplicand is set, which is not in the original
     // implementation; this is to provide a higher variety of hex values in the
     // highest 4 bits of rand128()'s output
-    return u128(0x1, state_1024star[p]) * mult;
+    return U128(0x1, state_1024star[p]) * mult;
 }
 
 #define RAND_IMPL(N)                                \
@@ -55,6 +56,8 @@ static uint128_t xorshift1024star(void) {
 TEMPLATE_STD(RAND_IMPL)
 
 void init_rand(void) {
+    srand(time(NULL));
+
     // fill the state of the 128plus generator
     state_64[0] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
     state_64[1] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
@@ -69,5 +72,5 @@ void init_rand(void) {
 
     // throw away some 1024plus output
     for (size_t i = 0x0; i < 0x4; ++i)
-        while ((xorshift128plus() & 0x3) != i);
+        while ((xorshift1024star() & 0x3) != i);
 }

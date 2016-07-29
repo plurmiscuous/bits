@@ -15,57 +15,57 @@
 #include "../util/print.h"
 #include "../util/random.h"
 
-size_t NR = ((uintmax_t) 1 << 6);
+size_t NR = (uintmax_t) 1 << 8;
 
 static const uint128_t VALUES[] = {
-    u128(0x0000000000000000, 0x0000000000000000),
-    u128(0x1111111111111111, 0x1111111111111111),
-    u128(0x2222222222222222, 0x2222222222222222),
-    u128(0x3333333333333333, 0x3333333333333333),
-    u128(0x4444444444444444, 0x4444444444444444),
-    u128(0x5555555555555555, 0x5555555555555555),
-    u128(0x6666666666666666, 0x6666666666666666),
-    u128(0x7777777777777777, 0x7777777777777777),
-    u128(0x8888888888888888, 0x8888888888888888),
-    u128(0x9999999999999999, 0x9999999999999999),
-    u128(0xAAAAAAAAAAAAAAAA, 0xAAAAAAAAAAAAAAAA),
-    u128(0xBBBBBBBBBBBBBBBB, 0xBBBBBBBBBBBBBBBB),
-    u128(0xCCCCCCCCCCCCCCCC, 0xCCCCCCCCCCCCCCCC),
-    u128(0xDDDDDDDDDDDDDDDD, 0xDDDDDDDDDDDDDDDD),
-    u128(0xEEEEEEEEEEEEEEEE, 0xEEEEEEEEEEEEEEEE),
-    u128(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF),
-    u128(0xFEDCBA9876543210, 0x0123456789ABCDEF),
-    u128(0xEDCBA9876543210F, 0xF0123456789ABCDE),
-    u128(0xDCBA9876543210FE, 0xEF0123456789ABCD),
-    u128(0xCBA9876543210FED, 0xDEF0123456789ABC),
-    u128(0xBA9876543210FEDC, 0xCDEF0123456789AB),
-    u128(0xA9876543210FEDCB, 0xBCDEF0123456789A),
-    u128(0x9876543210FEDCBA, 0xABCDEF0123456789),
-    u128(0x876543210FEDCBA9, 0x9ABCDEF012345678),
-    u128(0x76543210FEDCBA98, 0x89ABCDEF01234567),
-    u128(0x6543210FEDCBA987, 0x789ABCDEF0123456),
-    u128(0x543210FEDCBA9876, 0x6789ABCDEF012345),
-    u128(0x43210FEDCBA98765, 0x56789ABCDEF01234),
-    u128(0x3210FEDCBA987654, 0x456789ABCDEF0123),
-    u128(0x210FEDCBA9876543, 0x3456789ABCDEF012),
-    u128(0x10FEDCBA98765432, 0x23456789ABCDEF01),
-    u128(0x0FEDCBA987654321, 0x123456789ABCDEF0),
-    u128(0x0123456789ABCDEF, 0xFEDCBA9876543210),
-    u128(0xF0123456789ABCDE, 0xEDCBA9876543210F),
-    u128(0xEF0123456789ABCD, 0xDCBA9876543210FE),
-    u128(0xDEF0123456789ABC, 0xCBA9876543210FED),
-    u128(0xCDEF0123456789AB, 0xBA9876543210FEDC),
-    u128(0xBCDEF0123456789A, 0xA9876543210FEDCB),
-    u128(0xABCDEF0123456789, 0x9876543210FEDCBA),
-    u128(0x9ABCDEF012345678, 0x876543210FEDCBA9),
-    u128(0x89ABCDEF01234567, 0x76543210FEDCBA98),
-    u128(0x789ABCDEF0123456, 0x6543210FEDCBA987),
-    u128(0x6789ABCDEF012345, 0x543210FEDCBA9876),
-    u128(0x56789ABCDEF01234, 0x43210FEDCBA98765),
-    u128(0x456789ABCDEF0123, 0x3210FEDCBA987654),
-    u128(0x3456789ABCDEF012, 0x210FEDCBA9876543),
-    u128(0x23456789ABCDEF01, 0x10FEDCBA98765432),
-    u128(0x123456789ABCDEF0, 0x0FEDCBA987654321)
+    U128(0x0000000000000000, 0x0000000000000000),
+    U128(0x1111111111111111, 0x1111111111111111),
+    U128(0x2222222222222222, 0x2222222222222222),
+    U128(0x3333333333333333, 0x3333333333333333),
+    U128(0x4444444444444444, 0x4444444444444444),
+    U128(0x5555555555555555, 0x5555555555555555),
+    U128(0x6666666666666666, 0x6666666666666666),
+    U128(0x7777777777777777, 0x7777777777777777),
+    U128(0x8888888888888888, 0x8888888888888888),
+    U128(0x9999999999999999, 0x9999999999999999),
+    U128(0xAAAAAAAAAAAAAAAA, 0xAAAAAAAAAAAAAAAA),
+    U128(0xBBBBBBBBBBBBBBBB, 0xBBBBBBBBBBBBBBBB),
+    U128(0xCCCCCCCCCCCCCCCC, 0xCCCCCCCCCCCCCCCC),
+    U128(0xDDDDDDDDDDDDDDDD, 0xDDDDDDDDDDDDDDDD),
+    U128(0xEEEEEEEEEEEEEEEE, 0xEEEEEEEEEEEEEEEE),
+    U128(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF),
+    U128(0xFEDCBA9876543210, 0x0123456789ABCDEF),
+    U128(0xEDCBA9876543210F, 0xF0123456789ABCDE),
+    U128(0xDCBA9876543210FE, 0xEF0123456789ABCD),
+    U128(0xCBA9876543210FED, 0xDEF0123456789ABC),
+    U128(0xBA9876543210FEDC, 0xCDEF0123456789AB),
+    U128(0xA9876543210FEDCB, 0xBCDEF0123456789A),
+    U128(0x9876543210FEDCBA, 0xABCDEF0123456789),
+    U128(0x876543210FEDCBA9, 0x9ABCDEF012345678),
+    U128(0x76543210FEDCBA98, 0x89ABCDEF01234567),
+    U128(0x6543210FEDCBA987, 0x789ABCDEF0123456),
+    U128(0x543210FEDCBA9876, 0x6789ABCDEF012345),
+    U128(0x43210FEDCBA98765, 0x56789ABCDEF01234),
+    U128(0x3210FEDCBA987654, 0x456789ABCDEF0123),
+    U128(0x210FEDCBA9876543, 0x3456789ABCDEF012),
+    U128(0x10FEDCBA98765432, 0x23456789ABCDEF01),
+    U128(0x0FEDCBA987654321, 0x123456789ABCDEF0),
+    U128(0x0123456789ABCDEF, 0xFEDCBA9876543210),
+    U128(0xF0123456789ABCDE, 0xEDCBA9876543210F),
+    U128(0xEF0123456789ABCD, 0xDCBA9876543210FE),
+    U128(0xDEF0123456789ABC, 0xCBA9876543210FED),
+    U128(0xCDEF0123456789AB, 0xBA9876543210FEDC),
+    U128(0xBCDEF0123456789A, 0xA9876543210FEDCB),
+    U128(0xABCDEF0123456789, 0x9876543210FEDCBA),
+    U128(0x9ABCDEF012345678, 0x876543210FEDCBA9),
+    U128(0x89ABCDEF01234567, 0x76543210FEDCBA98),
+    U128(0x789ABCDEF0123456, 0x6543210FEDCBA987),
+    U128(0x6789ABCDEF012345, 0x543210FEDCBA9876),
+    U128(0x56789ABCDEF01234, 0x43210FEDCBA98765),
+    U128(0x456789ABCDEF0123, 0x3210FEDCBA987654),
+    U128(0x3456789ABCDEF012, 0x210FEDCBA9876543),
+    U128(0x23456789ABCDEF01, 0x10FEDCBA98765432),
+    U128(0x123456789ABCDEF0, 0x0FEDCBA987654321)
 };
 
 size_t NT = sizeof VALUES / sizeof VALUES[0];
@@ -164,11 +164,11 @@ void init_suite(int output_diff) {
     test_name = NULL;
     test_init = 0;
 
-    #define WIDTHS_FMT(N) " %3d   "
+    #define WIDTHS_FMT(N) "  %3d  "         // some clever replication iidssm
     #define WIDTHS_INT(N) , N
-    printf("testing libbits\n");
-    printf("             " TEMPLATE_STD(WIDTHS_FMT) "\n" TEMPLATE_STD(WIDTHS_INT));
     #define BORDER_HYPHENS(N) "-------"
+    printf("testing libbits\n");
+    printf("            " TEMPLATE_STD(WIDTHS_FMT) "\n" TEMPLATE_STD(WIDTHS_INT));
     printf("          +-" TEMPLATE_STD(BORDER_HYPHENS) "-+\n");
 }
 
@@ -220,15 +220,15 @@ void term_suite(void) {
 }
 
 #define TEST_IMPL(N)                                                                                                   \
-    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t serialed, uint##N##_t actual) {                \
+    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {                \
         init_test_check();                                                                                             \
         test_count();                                                                                                  \
                                                                                                                        \
-        if (serialed != actual) {                                                                                      \
+        if (expected != actual) {                                                                                      \
             if (print_diff) {                                                                                          \
-                printf("\t\terror: %s%d() did not produce the serialed output\n", fn, N);                              \
+                printf("\t\terror: %s%d() did not produce the expected output\n", fn, N);                              \
                 printf("\t\t\tinput:    " FMT##N "\n", print##N(input));                                               \
-                printf("\t\t\tserialed: " FMT##N "\n", print##N(serialed));                                            \
+                printf("\t\t\tserialed: " FMT##N "\n", print##N(expected));                                            \
                 printf("\t\t\tactual:   " FMT##N "\n", print##N(actual));                                              \
             }                                                                                                          \
             error();                                                                                                   \
@@ -255,7 +255,7 @@ void term_suite(void) {
                                                                                                                        \
         int ipop = serial_pop##N(input);                                                                               \
         int opop = serial_pop##N(output);                                                                              \
-        if (ipop != opop) {                                                                                             \
+        if (ipop != opop) {                                                                                            \
             if (print_diff) {                                                                                          \
                 printf("\t\terror: permutation %s%d() does not preserve set bit count\n", fn, N);                      \
                 printf("\t\t\tinput:           " FMT##N "\n", print##N(input));                                        \
