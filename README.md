@@ -7,17 +7,13 @@ Bits is a bit permutation/manipulation library implemented in both C and C++.
 
 ## Usage
 
-The separate language implementations are in their respective folders (i.e. C in `c/`, C++ in `cc/`).
+The separate language implementations and documentation are in their respective folders (i.e. C in `c/`, C++ in `cc/`).
 
 ## Notes
 
 ### Makefiles
 
 This project is still under active development. As such, the Makefiles have been configured for my system. You may need to modify them for your own.
-
-### License
-
-
 
 ### Credit
 
