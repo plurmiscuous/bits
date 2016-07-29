@@ -6,7 +6,6 @@
 
 // Customized PRNG. Based on modified Marsaglia xorshift generators.
 
-
 static uint64_t state128plus[2];
 static uint64_t state1024mod[16];
 
@@ -15,6 +14,7 @@ static uint128_t xs1024mod();
 
 Random::Random() {
     static bool rand_init;
+
     if (!rand_init) {
         srand(time(nullptr));
 
@@ -57,7 +57,7 @@ static uint64_t xs128plus() {
     return state128plus[1] + state128plus[0];
 }
 
-// NB: The modifications were made because 128-bit output from the standard
+// NB: The modifications were made because the 128-bit output from the standard
 //     1024star function never had the highest 3 bits set. Setting the 65th bit
 //     of the multiplicand and multiplier 'seems' to provide a decent
 //     distribution of hex values for the highest half-octet. The modified

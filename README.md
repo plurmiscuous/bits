@@ -17,7 +17,7 @@ This project is still under active development. As such, the Makefiles have been
 
 ### License
 
-GNU GPL v3.
+
 
 ### Credit
 
