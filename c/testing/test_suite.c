@@ -143,11 +143,11 @@ static void test_count() {
 }
 
 static char* test_name; // remove this if never used outside init_test()
-static int print_diff;
+static bool print_diff;
 
 static bool rand_init;
 
-void init_suite(int output_diff) {
+void init_suite(bool output_diff) {
     if (!rand_init) {
         init_rand();
         rand_init = true;
@@ -162,7 +162,7 @@ void init_suite(int output_diff) {
     print_diff = output_diff;
     suite_errors = prev_test_errors = prev_width_errors = test_counter = 0;
     test_name = NULL;
-    test_init = 0;
+    test_init = false;
 
     #define WIDTHS_FMT(N) "  %3d  "         // some clever replication iidssm
     #define WIDTHS_INT(N) , N
@@ -216,54 +216,55 @@ void term_suite(void) {
     printf("             tests: %lld\n", test_counter);
     printf("            errors: %lld\n", suite_errors);
 
-    print_diff = suite_errors = 0;
+    print_diff = false;
+    suite_errors = 0;
 }
 
-#define TEST_IMPL(N)                                                                                                   \
-    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {                \
-        init_test_check();                                                                                             \
-        test_count();                                                                                                  \
-                                                                                                                       \
-        if (expected != actual) {                                                                                      \
-            if (print_diff) {                                                                                          \
-                printf("\t\terror: %s%d() did not produce the expected output\n", fn, N);                              \
-                printf("\t\t\tinput:    " FMT##N "\n", print##N(input));                                               \
-                printf("\t\t\tserialed: " FMT##N "\n", print##N(expected));                                            \
-                printf("\t\t\tactual:   " FMT##N "\n", print##N(actual));                                              \
-            }                                                                                                          \
-            error();                                                                                                   \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual) {                      \
-        init_test_check();                                                                                             \
-        test_count();                                                                                                  \
-                                                                                                                       \
-        if (input != actual) {                                                                                         \
-            if (print_diff) {                                                                                          \
-                printf("\t\terror: %s%d() did not invert %s%d()\n", ifn, N, fn, N);                                    \
-                printf("\t\t\tinput:  " FMT##N "\n", print##N(input));                                                 \
-                printf("\t\t\toutput: " FMT##N "\n", print##N(actual));                                                \
-            }                                                                                                          \
-            error();                                                                                                   \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output) {                               \
-        init_test_check();                                                                                             \
-        test_count();                                                                                                  \
-                                                                                                                       \
-        int ipop = serial_pop##N(input);                                                                               \
-        int opop = serial_pop##N(output);                                                                              \
-        if (ipop != opop) {                                                                                            \
-            if (print_diff) {                                                                                          \
-                printf("\t\terror: permutation %s%d() does not preserve set bit count\n", fn, N);                      \
-                printf("\t\t\tinput:           " FMT##N "\n", print##N(input));                                        \
-                printf("\t\t\tinput bits set:  %d\n", ipop);                                                           \
-                printf("\t\t\toutput:          " FMT##N "\n", print##N(output));                                       \
-                printf("\t\t\toutput bits set: %d\n", opop);                                                           \
-            }                                                                                                          \
-            error();                                                                                                   \
-        }                                                                                                              \
+#define TEST_IMPL(N)                                                                                        \
+    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {     \
+        init_test_check();                                                                                  \
+        test_count();                                                                                       \
+                                                                                                            \
+        if (expected != actual) {                                                                           \
+            if (print_diff) {                                                                               \
+                printf("\t\terror: %s%d() did not produce the expected output\n", fn, N);                   \
+                printf("\t\t\tinput:    " FMT##N "\n", print##N(input));                                    \
+                printf("\t\t\tserialed: " FMT##N "\n", print##N(expected));                                 \
+                printf("\t\t\tactual:   " FMT##N "\n", print##N(actual));                                   \
+            }                                                                                               \
+            error();                                                                                        \
+        }                                                                                                   \
+    }                                                                                                       \
+                                                                                                            \
+    void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual) {           \
+        init_test_check();                                                                                  \
+        test_count();                                                                                       \
+                                                                                                            \
+        if (input != actual) {                                                                              \
+            if (print_diff) {                                                                               \
+                printf("\t\terror: %s%d() did not invert %s%d()\n", ifn, N, fn, N);                         \
+                printf("\t\t\tinput:  " FMT##N "\n", print##N(input));                                      \
+                printf("\t\t\toutput: " FMT##N "\n", print##N(actual));                                     \
+            }                                                                                               \
+            error();                                                                                        \
+        }                                                                                                   \
+    }                                                                                                       \
+                                                                                                            \
+    void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output) {                    \
+        init_test_check();                                                                                  \
+        test_count();                                                                                       \
+                                                                                                            \
+        int ipop = serial_pop##N(input);                                                                    \
+        int opop = serial_pop##N(output);                                                                   \
+        if (ipop != opop) {                                                                                 \
+            if (print_diff) {                                                                               \
+                printf("\t\terror: permutation %s%d() does not preserve set bit count\n", fn, N);           \
+                printf("\t\t\tinput:           " FMT##N "\n", print##N(input));                             \
+                printf("\t\t\tinput bits set:  %d\n", ipop);                                                \
+                printf("\t\t\toutput:          " FMT##N "\n", print##N(output));                            \
+                printf("\t\t\toutput bits set: %d\n", opop);                                                \
+            }                                                                                               \
+            error();                                                                                        \
+        }                                                                                                   \
     }
 TEMPLATE_STD(TEST_IMPL)

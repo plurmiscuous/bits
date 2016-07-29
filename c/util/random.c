@@ -10,48 +10,41 @@
 //
 // NB: The modifications were made because 128-bit output from the standard
 //     1024star function never had the highest 3 bits set. Setting the 65th bit
-//     of the state and multiplier 'seems' to provide a decent distribution of
-//     hex values for the highest half-octet. The modified functions have not
-//     been evaluated using any standard tests.
+//     of the multiplicand and multiplier 'seems' to provide a decent
+//     distribution of hex values for the highest half-octet. The modified
+//     functions have not been evaluated using any standard tests.
 
-static uint64_t state_64[2];
+static uint64_t state128plus[2];
 
-static uint64_t xorshift128plus(void) {
-    uint64_t s1 = state_64[0];
-    uint64_t s0 = state_64[1];
-    state_64[0] = s0;
+static uint64_t xs128plus(void) {
+    uint64_t s1 = state128plus[0];
+    uint64_t s0 = state128plus[1];
+    state128plus[0] = s0;
     s1 ^= s1 << 23;
     s1 ^= s1 >> 17;
     s0 ^= s0 >> 26;
-    state_64[1] = s0 ^ s1;
-    return state_64[1] + state_64[0];
+    state128plus[1] = s0 ^ s1;
+    return state128plus[1] + state128plus[0];
 }
 
-static uint64_t state_1024star[16];
+static uint64_t state1024mod[16];
 static int p;
 
-// the 65th bit of the multiplier is set, which is not in the original
-// implementation; w/o this bit, the highest 3 bits (usually 4 bits) of
-// rand128() are not set
-static const uint128_t mult = U128(0x1, 0x106689D45497FDB5);
-
-static uint128_t xorshift1024star(void) {
-    uint64_t s0 = state_1024star[p];
+static uint128_t xs1024mod(void) {
+    uint64_t s0 = state1024mod[p];
     p = (p + 1) & 0xF;
-    uint64_t s1 = state_1024star[p];
+    uint64_t s1 = state1024mod[p];
     s1 ^= s1 << 31;
     s1 ^= s1 >> 11;
     s0 ^= s0 >> 30;
-    state_1024star[p] = s0 ^ s1;
-    // the 65th bit of the multiplicand is set, which is not in the original
-    // implementation; this is to provide a higher variety of hex values in the
-    // highest 4 bits of rand128()'s output
-    return U128(0x1, state_1024star[p]) * mult;
+    state1024mod[p] = s0 ^ s1;
+
+    return U128(0x1, state1024mod[p]) * U128(0x1, 0x106689D45497FDB5);
 }
 
-#define RAND_IMPL(N)                                \
-    uint##N##_t rand##N(void) {                     \
-        return (uint##N##_t) xorshift1024star();    \
+#define RAND_IMPL(N)                        \
+    uint##N##_t rand##N(void) {             \
+        return (uint##N##_t) xs1024mod();   \
     }
 TEMPLATE_STD(RAND_IMPL)
 
@@ -59,18 +52,18 @@ void init_rand(void) {
     srand(time(NULL));
 
     // fill the state of the 128plus generator
-    state_64[0] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
-    state_64[1] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
+    state128plus[0] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
+    state128plus[1] = ((uint64_t) rand() << 41) ^ ((uint64_t) rand() << 23) ^ rand();
 
     // throw away some 128plus output
     for (size_t i = 0x0; i < 0x4; ++i)
-        while ((xorshift128plus() & 0x3) != i);
+        while ((xs128plus() & 0x3) != i);
 
-    // fill the state of the 1024plus generator using 128plus output
+    // fill the state of the 1024mod generator using 128plus output
     for (uint8_t i = 0; i < 16; ++i)
-        state_1024star[i] = xorshift128plus();
+        state1024mod[i] = xs128plus();
 
-    // throw away some 1024plus output
+    // throw away some 1024mod output
     for (size_t i = 0x0; i < 0x4; ++i)
-        while ((xorshift1024star() & 0x3) != i);
+        while ((xs1024mod() & 0x3) != i);
 }

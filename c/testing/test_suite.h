@@ -3,16 +3,17 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "../bits.h"
 #include "../inc/extint.h"
 #include "../inc/N.h"
 #include "../util/print.h"
 
-#define DISPLAY_DIFF_OFF 0
-#define DISPLAY_DIFF_ON  1
+#define DISPLAY_DIFF_OFF false
+#define DISPLAY_DIFF_ON  true
 
-void init_suite(int output_diff);
+void init_suite(bool output_diff);
 void init_test(const char* name);
 void init_width();
 void term_width(void);
