@@ -1,6 +1,11 @@
+# Standard
 *~
 *.o
 ._*
 *.a
 .DS_Store
 *.dSYM
+
+# Project-specific
+*/obj/
+*/test

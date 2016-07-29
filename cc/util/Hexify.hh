@@ -1,5 +1,5 @@
-#ifndef _HEXSTR_HH_
-#define _HEXSTR_HH_
+#ifndef _HEXIFY_HH_
+#define _HEXIFY_HH_
 
 #include <iostream>
 #include <iomanip>
@@ -7,9 +7,9 @@
 #include "../inc/extint.hh"
 
 template <typename T>
-class hexstr {
+class Hexify {
   public:
-    hexstr(T t): t_(t) {}
+    Hexify(T t): t_(t) {}
 
     void operator()(std::ostream& os) const {
         std::ios fmt(nullptr);
@@ -25,9 +25,9 @@ class hexstr {
 };
 
 template <>
-class hexstr<uint128_t> {
+class Hexify<uint128_t> {
   public:
-    hexstr(uint128_t u128): u128_(u128) {}
+    Hexify(uint128_t u128): u128_(u128) {}
 
     void operator()(std::ostream& os) const {
         std::ios fmt(nullptr);
@@ -43,9 +43,9 @@ class hexstr<uint128_t> {
 };
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, hexstr<T> n) {
-    n(os);
+std::ostream& operator<<(std::ostream& os, Hexify<T> h) {
+    h(os);
     return os;
 }
 
-#endif // _HEXSTR_HH_
+#endif // _HEXIFY_HH_

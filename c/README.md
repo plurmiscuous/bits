@@ -1,11 +1,7 @@
-Bits
-====
+Bits (C)
+========
 
-## About
-
-Bits is a bit permutation/manipulation library implemented in both C and C++.
-
-## Usage: C
+## Usage
 
 The two primary files are `c/bits.c` and the accompanying `c/bits.h`. The files in the `c/inc/` directory are required for compilation.
 

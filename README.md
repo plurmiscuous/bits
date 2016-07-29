@@ -22,5 +22,4 @@ Much of this code is inspired by the code, pseudocode, and research of others. A
 + Henry S. Warren, Jr.
 + Sean E. Anderson
 + Jasper Neumann
-+ Ruby B. Lee
-+ The folks at https://chessprogramming.wikispaces.com/
++ Ruby B. Lee, Zhijie Jerry Shi, Xiao Yang

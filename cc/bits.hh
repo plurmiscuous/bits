@@ -3,6 +3,40 @@
 
 #include <cstdint>
 
+/////////////////////////////
+////    N-BIT SUPPORT    ////
+/////////////////////////////
+
+template <typename T>
+static constexpr int BITS() {
+    return sizeof(T) << 3;
+}
+
+template <typename T>
+static constexpr int LOG(int p = 3, std::size_t s = 1) {
+    return sizeof(T) == s ? p : LOG<T>(p + 1, s << 1);
+}
+
+template <typename T>
+static constexpr T ONE() {
+    return T(1);
+}
+
+template <typename T>
+static constexpr T ALL() {
+    return T(-1);
+}
+
+template <typename T>
+static constexpr T WORD(int i) {
+    return T(-1) / ((T(1) << (T(1) << i)) + 1);
+}
+
+template <typename T>
+static constexpr T SHUF(int i) {
+    return WORD<T>(i + 1) & ~WORD<T>(i);
+}
+
 ////////////////////////////
 ////    CALCULATIONS    ////
 ////////////////////////////
