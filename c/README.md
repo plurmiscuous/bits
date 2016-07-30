@@ -30,4 +30,6 @@ The following must contain appropriate entries for new bit-widths:
 
 ## Testing
 
-Many (soon to be all) provided functions are tested against a naive (or at least more obvious) implementation on a selection of chosen, as well as random, test cases. To build the test suite, use `make test`. The command `make run` will both build and execute.
+Included is a custom test suite and harness in which most functions are tested against a serial/naive (or at least more obvious) implementation on a selection of chosen, as well as random, test cases. Functions that remain to be tested include the LFSR and Gray Code functions since I have yet to design adequate 'expected output' functions for them.
+
+To build the test suite, use `make test`. The command `make run` will both build and execute.
