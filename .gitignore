@@ -1,9 +1,10 @@
-# Standard
+# Standard C/C++
 *~
 *.o
 ._*
 *.a
 .DS_Store
+*.DS_Store
 *.dSYM
 
 # Project-specific
