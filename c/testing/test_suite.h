@@ -48,7 +48,7 @@ TEMPLATE_STD(TEST_SUITE_DECLARATIONS)
 //     TEST_PERM_INV      : for invertible permutation functions
 //     TEST_PERM_MASK_INV : for invertible permutation functions that require a mask
 //     TEST_MANI_MASK     : for manipulation functions that require a mask
-//     TEST_MANI_MASK_INV L for invertible manipulation functions that require a mask
+//     TEST_MANI_MASK_INV : for invertible manipulation functions that require a mask
 //     TEST_INV           : for invertible functions
 */
 
