@@ -3,13 +3,13 @@ Bits (C)
 
 ## Usage
 
-The two primary files are `c/bits.c` and the accompanying `c/bits.h`. The files in the `c/inc/` directory are required for compilation.
+The two primary files are `c/bits.c` and the accompanying `c/bits.h` header. The files in the `c/inc/` directory are required for compilation.
 
 `c/bits.h` contains generic function declaration macros of the form
 ```C
 uint##N##_t fn##N(uint##N##_t);
 ```
-which expand into declarations for each bit-width:
+which expand into declarations for each supported bit-width:
 ```C
 uint8_t fn8(uint8_t);
 uint16_t fn16(uint16_t);
@@ -30,4 +30,6 @@ The following must contain appropriate entries for new bit-widths:
 
 ## Testing
 
-Many (soon to be all) provided functions are tested against a naive (or at least more obvious) implementation on a selection of chosen, as well as random, test cases. To build the test suite, use `make test`. The command `make run` will both build and execute.
+Included is a custom test suite and harness in which most functions are tested against a serial/naive (or at least more obvious) implementation on a selection of chosen, as well as random, test cases. Functions that remain to be tested include the LFSR and Gray Code functions since I have yet to design adequate 'expected output' functions for them.
+
+To build the test suite, use `make test`. The command `make run` will both build and execute.
