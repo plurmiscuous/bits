@@ -39,7 +39,7 @@ TEMPLATE_STD(TEST_SUITE_DECLARATIONS)
 // Test macro paramters:
 //     fn   : the function to test
 //     ifn  : the inverse of the function fn
-//     test : one of the standard tests below, or a custom one (see TRANS_PERM_TEST for example)
+//     test : one of the standard tests below, or a custom one (see TEST_TRANS_PERM for example)
 //
 // Standard tests:
 //     TEST_CALC          : for calculation functions
