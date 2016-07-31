@@ -1,5 +1,5 @@
-#include "testing/test_suite.h"
-#include "testing/test_serial.h"
+#include "test_suite.h"
+#include "test_serial.h"
 
 TEST_FN(pop, TEST_CALC)
 TEST_FN(par, TEST_CALC)

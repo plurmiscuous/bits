@@ -6,7 +6,6 @@ FFLAGS := -floop-optimize -funroll-loops
 # AR := libtool -static
 
 OBJD := obj
-TEST := test
 OBJS := $(OBJD)/bits.o              \
 		$(OBJD)/print.o             \
 		$(OBJD)/random.o            \
@@ -19,19 +18,19 @@ HEAD := inc/extint.h                \
 
 .PRECIOUS: $(OBJD)/%.o
 
-all: $(TEST)
+all: test
 
-run: $(TEST)
+run: test
 	@echo ""
-	./$(TEST)
+	./test
 
 # lib: $(OBJD)/bitc.o
 # 	$(AR) -o libbits.a $<
 
-$(TEST): $(OBJD)/$(TEST).o $(OBJS)
+test: $(OBJD)/test.o $(OBJS)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -o $@ $^
 
-$(OBJD)/$(TEST).o: $(TEST).c $(HEAD)
+$(OBJD)/test.o: testing/test.c $(HEAD)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
@@ -48,4 +47,4 @@ $(OBJD)/%.o: testing/%.c testing/%.h $(HEAD)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
 clean:
-	/bin/rm -rf *~ $(OBJD) $(TEST) *.dSYM
+	/bin/rm -rf *~ $(OBJD) test *.dSYM
