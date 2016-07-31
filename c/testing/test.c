@@ -39,7 +39,7 @@ TEST_FN(bswap, TEST_BSWAP_PERM)
 TEST_FN(rswap, TEST_RSWAP_PERM)
 
 int main(void) {
-      init_suite(DISPLAY_DIFF_ON);
+      init_suite(true);
 
       test_pop();
       test_par();

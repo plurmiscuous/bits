@@ -3,8 +3,6 @@ CFLAGS := -g -Ofast -std=c11
 WFLAGS := -Wall -Werror -Wextra -Wpedantic -Wfatal-errors
 FFLAGS := -floop-optimize -funroll-loops
 
-# AR := libtool -static
-
 OBJD := obj
 OBJS := $(OBJD)/bits.o              \
 		$(OBJD)/print.o             \
@@ -23,9 +21,6 @@ all: test
 run: test
 	@echo ""
 	./test
-
-# lib: $(OBJD)/bitc.o
-# 	$(AR) -o libbits.a $<
 
 test: $(OBJD)/test.o $(OBJS)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -o $@ $^
@@ -47,4 +42,4 @@ $(OBJD)/%.o: testing/%.c testing/%.h $(HEAD)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
 clean:
-	/bin/rm -rf *~ $(OBJD) test *.dSYM
+	/bin/rm -rf *~ $(OBJD) test log.txt *.dSYM

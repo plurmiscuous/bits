@@ -15,20 +15,23 @@
 #define DISPLAY_DIFF_OFF false
 #define DISPLAY_DIFF_ON  true
 
-void init_suite(bool output_diff);
+void init_suite(bool log);
 void init_test(const char* name);
 void init_width();
 void term_width(void);
 void term_test(void);
 void term_suite(void);
 
-#define TEST_SUITE_DECLARATIONS(N)                                                                              \
-    uint##N##_t* T##N;                                                                                          \
-    uint##N##_t* P##N;                                                                                          \
-    uint##N##_t* R##N;                                                                                          \
-    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t serialed, uint##N##_t actual);          \
-    void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual);                \
-    void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output);
+#define TEST_SUITE_DECLARATIONS(N)                                                                                          \
+    uint##N##_t* T##N;                                                                                                      \
+    uint##N##_t* P##N;                                                                                                      \
+    uint##N##_t* R##N;                                                                                                      \
+    void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t serial, uint##N##_t actual);                        \
+    void check##N##_impl_mask(const char* fn, uint##N##_t input, uint##N##_t mask, uint##N##_t serial, uint##N##_t actual); \
+    void check##N##_inv(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t actual);                            \
+    void check##N##_inv_mask(const char* fn, const char* ifn, uint##N##_t input, uint##N##_t mask, uint##N##_t actual);     \
+    void check##N##_perm_assert(const char* fn, uint##N##_t input, uint##N##_t output);                                     \
+    void check##N##_perm_assert_mask(const char* fn, uint##N##_t input, uint##N##_t mask, uint##N##_t output);
 TEMPLATE_STD(TEST_SUITE_DECLARATIONS)
 
 /*
@@ -55,9 +58,10 @@ TEMPLATE_STD(TEST_SUITE_DECLARATIONS)
 extern size_t NT;   // the number of pre-selected test values
 extern size_t NR;   // the number of random test values
 
-// NB: Tests for functions that return 'int' are storing results as 'uint' and
-// using the unsigned versions for comparisons. But this is happening for both
-// the library and naive implementations so conversions ought to be consistent.
+// NB: Tests for functions that return 'int' (calculation functions) are storing
+//     results as 'uint' and using the unsigned versions for comparisons. But
+//     this is happening for both the library and naive implementations so
+//     conversions ought to be consistent.
 
 #define TEST_FN(func, IMPL)                                                                        \
     TEST_FUNC_HEAD(#func, func)                                                                    \
@@ -146,13 +150,13 @@ extern size_t NR;   // the number of random test values
 #define END_FOREACH }
 
 #define CHECK_CALC(N, func)                                                                        \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     serial = serial_##func##N(test_case);                                                          \
     actual = func##N(test_case);                                                                   \
     check##N##_impl(#func, test_case, serial, actual);
 
 #define CHECK_CALC_PAIR(N, func)                                                                   \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     serial = serial_##func##N(test_case, test_pair);                                               \
     actual = func##N(test_case, test_pair);                                                        \
     check##N##_impl(#func, test_case, serial, actual);
@@ -164,14 +168,14 @@ extern size_t NR;   // the number of random test values
     check##N##_inv(#func, #ifunc, test_case, invert);
 
 #define CHECK_PERM(N, func)                                                                        \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     actual = func##N(test_case);                                                                   \
     check##N##_perm_assert(#func, test_case, actual);                                              \
     serial = serial_##func##N(test_case);                                                          \
     check##N##_impl(#func, test_case, serial, actual);
 
 #define CHECK_PERM_INV(N, func, ifunc)                                                             \
-    uint##N##_t serial, actual, invert;                                                            \
+    uint##N##_t actual, serial, invert;                                                            \
     actual = func##N(test_case);                                                                   \
     check##N##_perm_assert(#func, test_case, actual);                                              \
     serial = serial_##func##N(test_case);                                                          \
@@ -183,26 +187,26 @@ extern size_t NR;   // the number of random test values
     check##N##_inv(#func, #ifunc, test_case, invert);
 
 #define CHECK_PERM_MASK(N, func)                                                                   \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     actual = func##N(test_case, test_mask);                                                        \
-    check##N##_perm_assert(#func, test_case, actual);                                              \
+    check##N##_perm_assert_mask(#func, test_case, test_mask, actual);                              \
     serial = serial_##func##N(test_case, test_mask);                                               \
-    check##N##_impl(#func, test_case, serial, actual);
+    check##N##_impl_mask(#func, test_case, test_mask, serial, actual);
 
 #define CHECK_PERM_MASK_INV(N, func, ifunc)                                                        \
-    uint##N##_t serial, actual, invert;                                                            \
+    uint##N##_t actual, serial, invert;                                                            \
     actual = func##N(test_case, test_mask);                                                        \
-    check##N##_perm_assert(#func, test_case, actual);                                              \
+    check##N##_perm_assert_mask(#func, test_case, test_mask, actual);                              \
     serial = serial_##func##N(test_case, test_mask);                                               \
-    check##N##_impl(#func, test_case, serial, actual);                                             \
+    check##N##_impl_mask(#func, test_case, test_mask, serial, actual);                             \
     invert = ifunc##N(actual, test_mask);                                                          \
-    check##N##_perm_assert(#ifunc, actual, invert);                                                \
+    check##N##_perm_assert_mask(#ifunc, actual, test_mask, invert);                                \
     serial = serial_##ifunc##N(actual, test_mask);                                                 \
-    check##N##_impl(#ifunc, actual, serial, invert);                                               \
-    check##N##_inv(#func, #ifunc, test_case, invert);
+    check##N##_impl_mask(#ifunc, actual, test_mask, serial, invert);                               \
+    check##N##_inv_mask(#func, #ifunc, test_case, test_mask, invert);
 
 #define CHECK_MANI_INV(N, func, ifunc)                                                             \
-    uint##N##_t serial, actual, invert;                                                            \
+    uint##N##_t actual, serial, invert;                                                            \
     actual = func##N(test_case);                                                                   \
     serial = serial_##func##N(test_case);                                                          \
     check##N##_impl(#func, test_case, serial, actual);                                             \
@@ -212,20 +216,20 @@ extern size_t NR;   // the number of random test values
     check##N##_inv(#func, #ifunc, test_case, invert);
 
 #define CHECK_MANI_MASK(N, func)                                                                   \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     actual = func##N(test_case, test_mask);                                                        \
     serial = serial_##func##N(test_case, test_mask);                                               \
-    check##N##_impl(#func, test_case, serial, actual);
+    check##N##_impl_mask(#func, test_case, test_mask, serial, actual);
 
 #define CHECK_MANI_MASK_INV(N, func, ifunc)                                                        \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     actual = func##N(test_case, test_mask);                                                        \
     serial = serial_##func##N(test_case, test_mask);                                               \
-    check##N##_impl(#func, test_case, serial, actual);                                             \
+    check##N##_impl_mask(#func, test_case, test_mask, serial, actual);                             \
     invert = ifunc##N(actual, test_mask);                                                          \
     serial = serial_##ifunc##N(actual, test_mask);                                                 \
-    check##N##_impl(#ifunc, actual, serial, invert);                                               \
-    check##N##_inv(#func, #ifunc, test_case, invert);
+    check##N##_impl_mask(#ifunc, actual, test_mask, serial, invert);                               \
+    check##N##_inv_mask(#func, #ifunc, test_case, test_mask, invert);
 
 #define CALC_TEST(N, func) CHECK_CALC(N, func)
 #define TEST_CALC(N, func) TEST_ALL_CASES(N, func, CALC_TEST)
@@ -267,7 +271,7 @@ extern size_t NR;   // the number of random test values
 
 #define TRANS_PERM_TEST(N, func)                                                                   \
     for (int rows = 1; rows <= N; rows <<= 1) {                                                    \
-        uint##N##_t serial, actual, invert;                                                        \
+        uint##N##_t actual, serial, invert;                                                        \
         actual = func##N(test_case, rows);                                                         \
         check##N##_perm_assert(#func, test_case, actual);                                          \
         serial = serial_##func##N(test_case, rows);                                                \
@@ -298,7 +302,7 @@ extern size_t NR;   // the number of random test values
 #define TEST_OMFLIP_PERM(N, func) TEST_ALL_CASES(N, func, OMFLIP_PERM_TEST)
 
 #define ROT_PERM_TEST(N, func)                                                                     \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     for (int rot = 0; rot < N; ++rot) {                                                            \
         actual = func##N(test_case, rot);                                                          \
         check##N##_perm_assert(#func, test_case, actual);                                          \
@@ -308,7 +312,7 @@ extern size_t NR;   // the number of random test values
 #define TEST_ROT_PERM(N, func) TEST_ALL_CASES(N, func, ROT_PERM_TEST)
 
 #define BSWAP_PERM_TEST(N, func)                                                                   \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     for (int bi = 0; bi < N; ++bi) {                                                               \
         for (int bj = bi; bj < N; ++bj) {                                                          \
             actual = func##N(test_case, bi, bj);                                                   \
@@ -320,7 +324,7 @@ extern size_t NR;   // the number of random test values
 #define TEST_BSWAP_PERM(N, func) TEST_ALL_CASES(N, func, BSWAP_PERM_TEST)
 
 #define RSWAP_PERM_TEST(N, func)                                                                   \
-    uint##N##_t serial, actual;                                                                    \
+    uint##N##_t actual, serial;                                                                    \
     for (int bi = 0; bi < N; ++bi) {                                                               \
         for (int bj = bi; bj < N; ++bj) {                                                          \
             int max = (bj - bi) < (BITS##N - bj + 1) ? (bj  - bi) : (BITS##N - bj + 1);            \
