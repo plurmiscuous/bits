@@ -1,5 +1,5 @@
-#ifndef _SERIAL_FUNCS_H_
-#define _SERIAL_FUNCS_H_
+#ifndef _TEST_SERIAL_H_
+#define _TEST_SERIAL_H_
 
 #include <stdint.h>
 
@@ -38,8 +38,7 @@
     uint##N##_t serial_extl##N(uint##N##_t bits, uint##N##_t mask);                                \
     uint##N##_t serial_depr##N(uint##N##_t bits, uint##N##_t mask);                                \
     uint##N##_t serial_depl##N(uint##N##_t bits, uint##N##_t mask);                                \
-    uint##N##_t serial_trans##N(uint##N##_t bits, int rows);                                       \
-
+    uint##N##_t serial_trans##N(uint##N##_t bits, int rows);
 TEMPLATE_STD(SERIAL_DECLARATIONS)
 
-#endif // _SERIAL_FUNCS_H_
+#endif // _TEST_SERIAL_H_

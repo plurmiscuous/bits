@@ -12,8 +12,7 @@ OBJS := $(OBJD)/bits.o              \
 		$(OBJD)/random.o            \
 		$(OBJD)/timer.o             \
 		$(OBJD)/random.o            \
-		$(OBJD)/serial.o            \
-		$(OBJD)/test_funcs.o        \
+		$(OBJD)/test_serial.o       \
 		$(OBJD)/test_suite.o
 HEAD := inc/extint.h                \
 		inc/N.h

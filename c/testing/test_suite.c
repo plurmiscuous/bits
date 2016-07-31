@@ -5,8 +5,7 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#include "serial.h"
-#include "test_funcs.h"
+#include "test_serial.h"
 #include "test_suite.h"
 
 #include "../bits.h"
@@ -15,7 +14,7 @@
 #include "../util/print.h"
 #include "../util/random.h"
 
-size_t NR = (uintmax_t) 1 << 8;
+size_t NR = (uintmax_t) 1 << 7;
 
 static const uint128_t VALUES[] = {
     U128(0x0000000000000000, 0x0000000000000000),
@@ -71,35 +70,36 @@ static const uint128_t VALUES[] = {
 size_t NT = sizeof VALUES / sizeof VALUES[0];
 
 static void alloc_test_values(void) {
-    #define ALLOC_TEST_VALUES_IMPL(N)                           \
-        {                                                       \
-            T##N = malloc(sizeof(uint##N##_t) * NT);            \
-            for (size_t i = 0; i < NT; ++i)                     \
-                T##N[i] = (uint##N##_t) VALUES[i];              \
-                                                                \
-            P##N = malloc(sizeof(uint##N##_t) * N);             \
-            uint##N##_t pow = ONE##N;                           \
-            for (int i = 0; i < N; ++i, pow <<= 1)              \
-                P##N[i] = pow;                                  \
-                                                                \
-            R##N = malloc(sizeof(uint##N##_t) * NR);            \
-            for (size_t i = 0; i < NR; ++i)                     \
-                R##N[i] = rand##N();                            \
+    #define ALLOC_TEST_VALUES(N)                        \
+        {                                               \
+            T##N = malloc(sizeof(uint##N##_t) * NT);    \
+            for (size_t i = 0; i < NT; ++i)             \
+                T##N[i] = (uint##N##_t) VALUES[i];      \
+                                                        \
+            P##N = malloc(sizeof(uint##N##_t) * N);     \
+            uint##N##_t pow = ONE##N;                   \
+            for (int i = 0; i < N; ++i, pow <<= 1)      \
+                P##N[i] = pow;                          \
+                                                        \
+            R##N = malloc(sizeof(uint##N##_t) * NR);    \
+            for (size_t i = 0; i < NR; ++i)             \
+                R##N[i] = rand##N();                    \
         }
-    TEMPLATE_STD(ALLOC_TEST_VALUES_IMPL)
+    TEMPLATE_STD(ALLOC_TEST_VALUES)
 }
 
 static void free_test_values(void) {
-    #define FREE_TEST_VALUES_IMPL(N)    \
+    #define FREE_TEST_VALUES(N)         \
         {                               \
             free(T##N); T##N = NULL;    \
             free(P##N); P##N = NULL;    \
             free(R##N); R##N = NULL;    \
         }
-    TEMPLATE_STD(FREE_TEST_VALUES_IMPL)
+    TEMPLATE_STD(FREE_TEST_VALUES)
 }
 
 static bool suite_init;
+static bool test_init;
 
 static void init_suite_check(void) {
     if (!suite_init) {
@@ -114,8 +114,6 @@ static void no_init_suite_check(void) {
         exit(-1);
     }
 }
-
-static bool test_init;
 
 static void init_test_check(void) {
     if (!test_init) {
@@ -220,7 +218,7 @@ void term_suite(void) {
     suite_errors = 0;
 }
 
-#define TEST_IMPL(N)                                                                                        \
+#define TEST_SUITE_IMPLEMENTATIONS(N)                                                                       \
     void check##N##_impl(const char* fn, uint##N##_t input, uint##N##_t expected, uint##N##_t actual) {     \
         init_test_check();                                                                                  \
         test_count();                                                                                       \
@@ -267,4 +265,4 @@ void term_suite(void) {
             error();                                                                                        \
         }                                                                                                   \
     }
-TEMPLATE_STD(TEST_IMPL)
+TEMPLATE_STD(TEST_SUITE_IMPLEMENTATIONS)

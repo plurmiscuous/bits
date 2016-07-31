@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "serial.h"
+#include "test_serial.h"
 
 #include "../bits.h"
 #include "../inc/extint.h"

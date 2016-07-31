@@ -467,7 +467,7 @@ TEMPLATE_STD(TRANS_DEFINITION)
 //     }
 #define LFSR_DEFINITION(N)                                                                         \
     uint##N##_t lfsr##N(uint##N##_t bits) {                                                        \
-        bits = (bits >> 1) ^ ((-(bits & 0x1)) & FTAPS##N);                                         \
+        bits = (bits >> 1) ^ (-(bits & 0x1) & FTAPS##N);                                           \
         return bits;                                                                               \
     }
 TEMPLATE_STD(LFSR_DEFINITION)
