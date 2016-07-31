@@ -44,14 +44,16 @@ TEMPLATE_STD(TEST_SUITE_DECLARATIONS)
 // Standard tests:
 //     TEST_CALC          : for calculation functions
 //     TEST_CALC_PAIR     : for calculation functions that require a pair of inputs
+//     TEST_PERM          : for permutation functions
 //     TEST_PERM_INV      : for invertible permutation functions
 //     TEST_PERM_MASK_INV : for invertible permutation functions that require a mask
 //     TEST_MANI_MASK     : for manipulation functions that require a mask
+//     TEST_MANI_MASK_INV L for invertible manipulation functions that require a mask
 //     TEST_INV           : for invertible functions
 */
 
-extern size_t NR;
-extern size_t NT;
+extern size_t NT;   // the number of pre-selected test values
+extern size_t NR;   // the number of random test values
 
 // NB: Tests for functions that return 'int' are storing results as 'uint' and
 // using the unsigned versions for comparisons. But this is happening for both
