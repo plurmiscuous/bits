@@ -1,5 +1,5 @@
-#ifndef _TEST_H_
-#define _TEST_H_
+#ifndef TEST_H
+#define TEST_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -338,4 +338,4 @@ extern size_t NR;   // the number of random test values
     }
 #define TEST_RSWAP_PERM(N, func) TEST_ALL_CASES(N, func, RSWAP_PERM_TEST)
 
-#endif // _TEST_H_
+#endif // TEST_H

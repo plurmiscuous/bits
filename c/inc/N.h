@@ -1,5 +1,5 @@
-#ifndef _N_H_
-#define _N_H_
+#ifndef N_H
+#define N_H
 
 #include "extint.h"
 
@@ -261,4 +261,4 @@ static const uint64_t TRANS64[] = {
     TEST( 64, func, ifunc)                           \
     TEST(128, func, ifunc)                           \
 
-#endif // _N_H_
+#endif // N_H

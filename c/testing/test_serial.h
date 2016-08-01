@@ -1,5 +1,5 @@
-#ifndef _TEST_SERIAL_H_
-#define _TEST_SERIAL_H_
+#ifndef TEST_SERIAL_H
+#define TEST_SERIAL_H
 
 #include <stdint.h>
 
@@ -41,4 +41,4 @@
     uint##N##_t serial_trans##N(uint##N##_t bits, int rows);
 TEMPLATE_STD(SERIAL_DECLARATIONS)
 
-#endif // _TEST_SERIAL_H_
+#endif // TEST_SERIAL_H

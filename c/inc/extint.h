@@ -1,5 +1,5 @@
-#ifndef _EXTINT_H_
-#define _EXTINT_H_
+#ifndef EXTINT_H
+#define EXTINT_H
 
 // Extended Integer Support
 
@@ -18,4 +18,4 @@ __extension__ typedef unsigned __int128 uint128_t;
 #define U64(u64)        UINT64_C(u64)
 #define U128(h64, l64)  (((uint128_t) h64 << 64) | l64)
 
-#endif // _EXTINT_H_
+#endif // EXTINT_H

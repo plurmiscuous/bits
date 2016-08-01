@@ -1,5 +1,5 @@
-#ifndef _BITS_H_
-#define _BITS_H_
+#ifndef BITS_H
+#define BITS_H
 
 #include <stdint.h>
 
@@ -438,4 +438,4 @@ TEMPLATE_STD(DEPR_DECLARATION)
 ////    P-SQUARE FUNCTIONS    ////
 //////////////////////////////////
 
-#endif // _BITS_H_
+#endif // BITS_H

@@ -42,4 +42,4 @@ $(OBJD)/%.o: testing/%.c testing/%.h $(HEAD)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
 clean:
-	/bin/rm -rf *~ $(OBJD) test log.txt *.dSYM
+	/bin/rm -rf *~ $(OBJD) test log.txt *.dSYM .DS_Store

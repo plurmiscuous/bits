@@ -1,5 +1,5 @@
-#ifndef _PRINT_H_
-#define _PRINT_H_
+#ifndef PRINT_H
+#define PRINT_H
 
 #include <inttypes.h>
 
@@ -43,4 +43,4 @@ char* bitstr32(uint32_t bits);
 char* bitstr64(uint64_t bits);
 char* bitstr128(uint128_t bits);
 
-#endif // _PRINT_H_
+#endif // PRINT_H

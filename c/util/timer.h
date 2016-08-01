@@ -1,5 +1,5 @@
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <time.h>
 
@@ -16,4 +16,4 @@ long time_us(void);
 long time_ms(void);
 long time_sec(void);
 
-#endif // _TIMER_H_
+#endif // TIMER_H
