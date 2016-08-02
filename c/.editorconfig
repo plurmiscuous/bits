@@ -5,8 +5,14 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 
+# Style Makefiles
+[Makefile]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
 
-# Style specific files
+# Style specific file extensions
 [*.{c,h,cc,hh}]
 charset = utf-8
 indent_style = space
