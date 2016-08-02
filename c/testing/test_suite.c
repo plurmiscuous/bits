@@ -227,12 +227,8 @@ void term_suite(void) {
     suite_errors = 0;
 
     if (fptr) {
-        if (fflush(fptr)) {
-            fprintf(stderr, "WARNING: could not flush log file stream %s.\n", filename);
-            fprintf(stderr, "ERROR %d: %s\n", errno, strerror(errno));
-        }
         if (fclose(fptr)) {
-            fprintf(stderr, "WARNING: could not close log file %s.\n", filename);
+            fprintf(stderr, "WARNING: could not close open log file %s.\n", filename);
             fprintf(stderr, "ERROR %d: %s\n", errno, strerror(errno));
         }
         fptr = NULL;
