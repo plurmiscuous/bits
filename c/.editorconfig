@@ -13,7 +13,7 @@ indent_size = 4
 trim_trailing_whitespace = true
 
 # Style specific file extensions
-[*.{c,h,cc,hh}]
+[*.{c,h}]
 charset = utf-8
 indent_style = space
 indent_size = 4
