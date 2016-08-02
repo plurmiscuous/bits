@@ -4,15 +4,17 @@ WFLAGS := -Wall -Werror -Wextra -Wpedantic -Wfatal-errors
 FFLAGS := -floop-optimize -funroll-loops
 
 OBJD := obj
-OBJS := $(OBJD)/bits.o              \
-		$(OBJD)/print.o             \
-		$(OBJD)/random.o            \
-		$(OBJD)/timer.o             \
-		$(OBJD)/random.o            \
-		$(OBJD)/test_serial.o       \
-		$(OBJD)/test_suite.o
-HEAD := inc/extint.h                \
-		inc/N.h
+OBJS :=                     \
+	$(OBJD)/bits.o          \
+	$(OBJD)/print.o         \
+	$(OBJD)/random.o        \
+	$(OBJD)/timer.o         \
+	$(OBJD)/random.o        \
+	$(OBJD)/test_serial.o   \
+	$(OBJD)/test_suite.o
+HEAD :=                     \
+	inc/extint.h            \
+	inc/N.h
 
 .PRECIOUS: $(OBJD)/%.o
 
