@@ -67,15 +67,18 @@ static size_t array_size(T(&)[N]) {
 }
 
 TestCases::TestCases() {
-    test_case_ = 0;
     size_t selected_values = array_size(VALUES);
     test_size_ = selected_values + rand_values;
     test_cases_ = new uint128_t[test_size_];
+
     for (size_t i = 0; i < selected_values; ++i)
         test_cases_[i] = VALUES[i];
+
     Random random;
     for (size_t i = selected_values; i < test_size_; ++i)
         test_cases_[i] = random.rand<uint128_t>();
+
+    test_case_ = 0;
 }
 
 TestCases::~TestCases() {

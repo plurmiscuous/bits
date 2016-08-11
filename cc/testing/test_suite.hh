@@ -1,7 +1,7 @@
 #ifndef _TEST_SUITE_HH_
 #define _TEST_SUITE_HH_
 
-#include "../util/Hexify.hh"
+#include "../util/Hexstr.hh"
 
 void init_suite();
 void init_test(const char* name);
@@ -15,7 +15,6 @@ template <typename T> void check_inv(const char* fn, const char* ifn, T input, T
 template <typename T> void check_perm_assert(const char* fn, T input, T output);
 
 //////
-
 
 static bool suite_init;
 

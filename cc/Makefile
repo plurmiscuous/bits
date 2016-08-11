@@ -8,10 +8,10 @@ FFLAGS := -floop-optimize -funroll-loops
 OBJD := obj
 TEST := test
 OBJS := $(OBJD)/bits.o              \
-		$(OBJD)/hexstr.o            \
 		$(OBJD)/serial.o 			\
 		$(OBJD)/Random.o 			\
-		$(OBJD)/TestCases.o
+		$(OBJD)/TestCases.o 		\
+		$(OBJD)/uint256_t.o
 HEAD := inc/extint.hh
 
 .PRECIOUS: $(OBJD)/%.o
@@ -44,5 +44,9 @@ $(OBJD)/%.o: testing/%.cc testing/%.hh $(HEAD)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
 
+$(OBJD)/%.o: ext/%.cc ext/%.hh $(HEAD)
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(WFLAGS) $(FFLAGS) -c -o $@ $<
+
 clean:
-	/bin/rm -rf *~ $(OBJD) $(TEST) *.dSYM
+	/bin/rm -rf *~ $(OBJD) $(TEST) *.dSYM .DS_Store

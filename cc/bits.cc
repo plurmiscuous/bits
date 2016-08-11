@@ -1,12 +1,13 @@
+#include <iostream>
 #include <cstdint>
 #include <cstddef>
 
 #include "bits.hh"
 #include "inc/extint.hh"
 
-// The ASSERT macro turns on run-time assertions for function arguments, such as
-// asserting that shift amounts are non-negative and within the width of data
-// type being operated on.
+// The ASSERT macro turns on run-time assertions for function arguments,
+// such as asserting that shift amounts are non-negative and within the
+// width of data type being operated on.
 #define ASSERT 1
 
 #if ASSERT
@@ -21,16 +22,15 @@
 
 // POPULATION
 template <typename T>
-int pop(T bits) {
+int bits::pop(T bits) {
     for (int i = 0; i < LOG<T>(); ++i)
         bits = (bits & WORD<T>(i)) + ((bits >> (1 << i)) & WORD<T>(i));
-
     return static_cast<int>(bits);
 }
 
 // PARITY
 template <typename T>
-int par(T bits) {
+int bits::par(T bits) {
     for (int i = BITS<T>(); i >>= 1;)
         bits ^= bits >> i;
 
@@ -39,9 +39,9 @@ int par(T bits) {
 
 // COUNT TRAILING ZEROS
 template <typename T>
-int ctz(T bits) {
+int bits::ctz(T bits) {
     int n = 1;
-    T mask = ALL<T>();
+    T mask = T(-1);
 
     for (int i = BITS<T>() >> 1; i > 1; i >>= 1) {
         mask >>= i;
@@ -56,9 +56,9 @@ int ctz(T bits) {
 
 // COUNT LEADING ZEROS
 template <typename T>
-int clz(T bits) {
+int bits::clz(T bits) {
     int n = 0;
-    T mask = ALL<T>() >> (BITS<T>() >> 1);
+    T mask = T(-1) >> (BITS<T>() >> 1);
 
     for (int i = BITS<T>(); i >>= 1;) {
         if (bits <= mask) {
@@ -73,7 +73,7 @@ int clz(T bits) {
 
 // LONGEST CHAIN OF SET BITS
 template <typename T>
-int mxset(T bits) {
+int bits::mxset(T bits) {
     int k;
     for (k = 0; bits; ++k)
         bits &= (bits >> 1);
@@ -83,7 +83,7 @@ int mxset(T bits) {
 
 // SHORTEST CHAIN OF SET BITS
 template <typename T>
-int mnset(T bits) {
+int bits::mnset(T bits) {
     T dn = bits & ~(bits >> 1);
     T up = bits & ~(bits << 1);
 
@@ -96,19 +96,19 @@ int mnset(T bits) {
 
 // MAXIMUM
 template <typename T>
-T max(T x, T y) {
+T bits::max(T x, T y) {
     return x ^ ((x ^ y) & -(x < y));
 }
 
 // MINIMUM
 template <typename T>
-T min(T x, T y) {
+T bits::min(T x, T y) {
     return y ^ ((x ^ y) & -(x < y));
 }
 
 // GREATEST COMMON DIVISOR
 template <typename T>
-T gcd(T x, T y) {
+T bits::gcd(T x, T y) {
     while (y != 0) {
         y ^= x %= y;
         y ^= x ^= y;
@@ -118,8 +118,8 @@ T gcd(T x, T y) {
 
 // BINARY LOGARITHM
 template <typename T>
-T lb(T bits) {
-    T m = ALL<T>();
+T bits::lb(T bits) {
+    T m = T(-1);
     T log = 0;
 
     for (int i = LOG<T>(); i--;) {
@@ -134,13 +134,13 @@ T lb(T bits) {
 
 // IS POWER OF 2
 template <typename T>
-int ipow(T bits) {
+bool bits::ipow(T bits) {
     return bits && (bits & (bits - 1)) == 0;
 }
 
 // CEIL POWER OF 2
 template <typename T>
-T cpow(T bits) {
+T bits::cpow(T bits) {
     bits += bits == 0;
     --bits;
     for (int i = BITS<T>(); (i >>= 1) != 0;)
@@ -151,7 +151,7 @@ T cpow(T bits) {
 
 // FLOOR POWER OF 2
 template <typename T>
-T fpow(T bits) {
+T bits::fpow(T bits) {
     for (int i = BITS<T>(); (i >>= 1) != 0;)
         bits |= bits >> i;
     return bits - (bits >> 1);
@@ -159,13 +159,13 @@ T fpow(T bits) {
 
 // ISOLATE LEAST SIGNIFICANT SET BIT
 template <typename T>
-T lsb(T bits) {
-    return bits & -bits;
+T bits::lsb(T bits) {
+    return bits & (~bits + 1);
 }
 
 // ISOLATE MOST SIGNIFICANT SET BIT
 template <typename T>
-T msb(T bits) {
+T bits::msb(T bits) {
     for (int i = BITS<T>(); (i >>= 1) != 0;)
         bits |= bits >> i;
     return (bits >> 1) + (bits != 0);
@@ -177,21 +177,21 @@ T msb(T bits) {
 
 // ROTATE LEFT
 template <typename T>
-T rol(T bits, int rot) {
+T bits::rol(T bits, int rot) {
     assert(0 <= rot && rot < BITS<T>());
     return (bits << rot) | (bits >> (BITS<T>() - rot));
 }
 
 // ROTATE RIGHT
 template <typename T>
-T ror(T bits, int rot) {
+T bits::ror(T bits, int rot) {
     assert(0 <= rot && rot < BITS<T>());
     return (bits << (BITS<T>() - rot)) | (bits >> rot);
 }
 
 // DELTA SWAP
 template <typename T>
-T delta(T bits, T mask, int del) {
+T bits::delta(T bits, T mask, int del) {
     assert(0 <= del && del < BITS<T>());
     T tmp = (bits ^ (bits >> del)) & mask;
     bits ^= tmp ^ (tmp << del);
@@ -200,7 +200,7 @@ T delta(T bits, T mask, int del) {
 
 // SWAPPING INDIVIDUAL BITS
 template <typename T>
-T bswap(T bits, int i, int j) {
+T bits::bswap(T bits, int i, int j) {
     assert(0 <= i && i < BITS<T>());
     assert(0 <= j && j < BITS<T>());
     T tmp = ((bits >> i) ^ (bits >> j)) & 1;
@@ -209,18 +209,18 @@ T bswap(T bits, int i, int j) {
 
 // SWAPPING BIT RANGES
 template <typename T>
-T rswap(T bits, int i, int j, int len) {
+T bits::rswap(T bits, int i, int j, int len) {
     assert(0 <= len && len <= BITS<T>());
     assert(0 <= i && i < BITS<T>() && i + len <= BITS<T>());
     assert(0 <= j && j < BITS<T>() && j + len <= BITS<T>());
     assert(i + len < j || i < j + len);
-    T tmp = ((bits >> i) ^ (bits >> j)) & ((ONE<T>() << len) - 1);
+    T tmp = ((bits >> i) ^ (bits >> j)) & ((T(1) << len) - 1);
     return bits ^ ((tmp << i) | (tmp << j));
 }
 
 // REVERSE
 template <typename T>
-T rev(T bits) {
+T bits::rev(T bits) {
     for (int i = 0; i < LOG<T>(); ++i)
         bits = (bits & WORD<T>(i)) << (1 << i) | (bits & ~WORD<T>(i)) >> (1 << i);
     return bits;
@@ -228,7 +228,7 @@ T rev(T bits) {
 
 // PERFECT OUTER-SHUFFLE
 template <typename T>
-T shuf(T bits) {
+T bits::shuf(T bits) {
     for (int i = LOG<T>() - 1; i--;)
         bits = delta<T>(bits, SHUF<T>(i), 1 << i);
     return bits;
@@ -236,7 +236,7 @@ T shuf(T bits) {
 
 // PERFECT OUTER-UNSHUFFLE
 template <typename T>
-T ishuf(T bits) {
+T bits::ishuf(T bits) {
     for (int i = 0; i < LOG<T>() - 1; ++i)
         bits = delta<T>(bits, SHUF<T>(i), 1 << i);
     return bits;
@@ -244,14 +244,14 @@ T ishuf(T bits) {
 
 // OMFLIP
 template <typename T>
-T omflip(T bits, T mask, uint8_t opts) {
+T bits::omflip(T bits, T mask, uint8_t opts) {
     for (int i = 0; i < 2; ++i) {
         T m = (mask >> (i * (BITS<T>() >> 1))) & WORD<T>(LOG<T>() - 1);
         if (((opts >> i) & 0x1) == 0) {
             bits = delta<T>(bits, m, BITS<T>() >> 1);
             bits = shuf<T>(bits);
         } else {
-            bits = ishuf<T>(bits);
+            bits = bits::ishuf<T>(bits);
             bits = delta<T>(bits, m, BITS<T>() >> 1);
         }
     }
@@ -260,7 +260,7 @@ T omflip(T bits, T mask, uint8_t opts) {
 
 // BUTTERFLY NETWORK
 template <typename T>
-T bfly(T bits, T mask) {
+T bits::bfly(T bits, T mask) {
     for (int i = LOG<T>(); i--;)
         bits = delta<T>(bits, mask & WORD<T>(i), 1 << i);
     return bits;
@@ -268,7 +268,7 @@ T bfly(T bits, T mask) {
 
 // INVERSE-BUTTERFLY NETWORK
 template <typename T>
-T ibfly(T bits, T mask) {
+T bits::ibfly(T bits, T mask) {
     for (int i = 0; i < LOG<T>(); ++i)
         bits = delta<T>(bits, mask & WORD<T>(i), 1 << i);
     return bits;
@@ -276,10 +276,10 @@ T ibfly(T bits, T mask) {
 
 // MATRIX TRANSPOSE
 template <typename T>
-T trans(T bits, int rows) {
+T bits::trans(T bits, int rows) {
     assert(((BITS<T>() / rows) * rows) == BITS<T>());
-    int c = LOG<T>() - lb<T>(rows);
-    int g = gcd<T>(LOG<T>(), c);
+    int c = LOG<T>() - bits::lb<T>(rows);
+    int g = bits::gcd<T>(LOG<T>(), c);
     int d = LOG<T>() / g - 1;
 
     for (int i = 0; i < g; ++i) {
@@ -287,7 +287,7 @@ T trans(T bits, int rows) {
             if (n >= LOG<T>())
                 n -= LOG<T>();
             if (n != k) {
-                int mx = max<T>(n, k);
+                int mx = bits::max<T>(n, k);
                 int mn = k ^ n ^ mx;
                 int sh = (1 << mx) - (1 << mn);
                 bits = delta<T>(bits, WORD<T>(mx) & ~WORD<T>(mn), sh);
@@ -317,19 +317,19 @@ T trans(T bits, int rows) {
 
 // BITWISE TERNARY
 template <typename T>
-T tern(T xbits, T ybits, T mask) {
+T bits::tern(T xbits, T ybits, T mask) {
     return (mask & (xbits ^ ybits)) ^ ybits;
 }
 
 // BINARY TO GRAY CODE
 template <typename T>
-T gray(T bits) {
+T bits::gray(T bits) {
     return bits ^ (bits >> 1);
 }
 
 // GRAY TO BINARY CODE
 template <typename T>
-T igray(T bits) {
+T bits::igray(T bits) {
     for (int i = 1; i < BITS<T>(); i <<= 1)
         bits ^= bits >> i;
     return bits;
@@ -337,7 +337,7 @@ T igray(T bits) {
 
 // EXTRACT LEFT
 template <typename T>
-T extl(T bits, T mask) {
+T bits::extl(T bits, T mask) {
     bits &= mask;
     T m1 = T(~mask) >> 1;
 
@@ -347,10 +347,10 @@ T extl(T bits, T mask) {
             m ^= (m >> j);
 
         T mv = m & mask;
-        mask = (mask ^ mv) | (mv << (ONE<T>() << i));
+        mask = (mask ^ mv) | (mv << (T(1) << i));
 
         T mt = bits & mv;
-        bits = (bits ^ mt) | (mt << (ONE<T>() << i));
+        bits = (bits ^ mt) | (mt << (T(1) << i));
         m1 &= ~m;
     }
 
@@ -359,7 +359,7 @@ T extl(T bits, T mask) {
 
 // EXTRACT RIGHT
 template <typename T>
-T extr(T bits, T mask) {
+T bits::extr(T bits, T mask) {
     bits &= mask;
     T m1 = ~mask << 1;
 
@@ -369,10 +369,10 @@ T extr(T bits, T mask) {
             m ^= (m << j);
 
         T mv = m & mask;
-        mask = (mask ^ mv) | (mv >> (ONE<T>() << i));
+        mask = (mask ^ mv) | (mv >> (T(1) << i));
 
         T mt = bits & mv;
-        bits = (bits ^ mt) | (mt >> (ONE<T>() << i));
+        bits = (bits ^ mt) | (mt >> (T(1) << i));
         m1 &= ~m;
     }
 
@@ -381,7 +381,7 @@ T extr(T bits, T mask) {
 
 // DEPOSIT LEFT
 template <typename T>
-T depl(T bits, T mask) {
+T bits::depl(T bits, T mask) {
     T masks[LOG<T>()];
     T m0 = mask;
     T m1 = ~mask << 1;
@@ -392,19 +392,19 @@ T depl(T bits, T mask) {
             m ^= (m << j);
 
         masks[i] = m & mask;
-        mask = (mask ^ masks[i]) | (masks[i] >> (ONE<T>() << i));
+        mask = (mask ^ masks[i]) | (masks[i] >> (T(1) << i));
         m1 &= ~m;
     }
 
     for (int i = LOG<T>(); i--;)
-        bits ^= ((bits ^ (bits << (ONE<T>() << i))) & masks[i]);
+        bits ^= ((bits ^ (bits << (T(1) << i))) & masks[i]);
 
     return bits & m0;
 }
 
 // DEPOSIT RIGHT
 template <typename T>
-T depr(T bits, T mask) {
+T bits::depr(T bits, T mask) {
     T masks[LOG<T>()];
     T m0 = mask;
     T m1 = T(~mask) >> 1;
@@ -415,63 +415,63 @@ T depr(T bits, T mask) {
             m ^= (m >> j);
 
         masks[i] = m & mask;
-        mask = (mask ^ masks[i]) | (masks[i] << (ONE<T>() << i));
+        mask = (mask ^ masks[i]) | (masks[i] << (T(1) << i));
         m1 &= ~m;
     }
 
     for (int i = LOG<T>(); i--;)
-        bits ^= (bits ^ (bits >> (ONE<T>() << i))) & masks[i];
+        bits ^= (bits ^ (bits >> (T(1) << i))) & masks[i];
 
     return bits & m0;
 }
 
 // GROUP
 template <typename T>
-T grp(T bits, T mask) {
-    return extr<T>(bits, mask) | extl<T>(bits, ~mask);
+T bits::grp(T bits, T mask) {
+    return bits::extr<T>(bits, mask) | bits::extl<T>(bits, ~mask);
 }
 
 // UNGROUP
 template <typename T>
-T igrp(T bits, T mask) {
-    return depr<T>(bits, ~mask) | depl<T>(bits, mask);
+T bits::igrp(T bits, T mask) {
+    return bits::depr<T>(bits, ~mask) | bits::depl<T>(bits, mask);
 }
 
-#define BITS_CC_TEMPLATE(T)                                 \
-    template int pop<T>(T bits);                            \
-    template int par<T>(T bits);                            \
-    template int ctz<T>(T bits);                            \
-    template int clz<T>(T bits);                            \
-    template int mxset<T>(T bits);                          \
-    template int mnset<T>(T bits);                          \
-    template T max<T>(T x, T y);                            \
-    template T min<T>(T x, T y);                            \
-    template T gcd<T>(T x, T y);                            \
-    template T lb<T>(T bits);                               \
-    template int ipow<T>(T bits);                           \
-    template T cpow<T>(T bits);                             \
-    template T fpow<T>(T bits);                             \
-    template T lsb<T>(T bits);                              \
-    template T msb<T>(T bits);                              \
-    template T rol<T>(T bits, int rot);                     \
-    template T ror<T>(T bits, int rot);                     \
-    template T delta<T>(T bits, T mask, int shift);         \
-    template T bswap<T>(T bits, int i, int j);              \
-    template T rswap<T>(T bits, int i, int j, int len);     \
-    template T rev<T>(T bits);                              \
-    template T shuf<T>(T bits);                             \
-    template T ishuf<T>(T bits);                            \
-    template T grp<T>(T bits, T mask);                      \
-    template T igrp<T>(T bits, T mask);                     \
-    template T omflip<T>(T bits, T mask, uint8_t ctrl);     \
-    template T bfly<T>(T bits, T mask);                     \
-    template T ibfly<T>(T bits, T mask);                    \
-    template T trans<T>(T bits, int rows);                  \
-    template T tern<T>(T xbits, T ybits, T ctrl);           \
-    template T gray<T>(T bits);                             \
-    template T igray<T>(T bits);                            \
-    template T extl<T>(T bits, T mask);                     \
-    template T extr<T>(T bits, T mask);                     \
-    template T depl<T>(T bits, T mask);                     \
-    template T depr<T>(T bits, T mask);
+#define BITS_CC_TEMPLATE(T)                                       \
+    template int bits::pop<T>(T bits);                            \
+    template int bits::par<T>(T bits);                            \
+    template int bits::ctz<T>(T bits);                            \
+    template int bits::clz<T>(T bits);                            \
+    template int bits::mxset<T>(T bits);                          \
+    template int bits::mnset<T>(T bits);                          \
+    template T bits::max<T>(T x, T y);                            \
+    template T bits::min<T>(T x, T y);                            \
+    template T bits::gcd<T>(T x, T y);                            \
+    template T bits::lb<T>(T bits);                               \
+    template bool bits::ipow<T>(T bits);                          \
+    template T bits::cpow<T>(T bits);                             \
+    template T bits::fpow<T>(T bits);                             \
+    template T bits::lsb<T>(T bits);                              \
+    template T bits::msb<T>(T bits);                              \
+    template T bits::rol<T>(T bits, int rot);                     \
+    template T bits::ror<T>(T bits, int rot);                     \
+    template T bits::delta<T>(T bits, T mask, int shift);         \
+    template T bits::bswap<T>(T bits, int i, int j);              \
+    template T bits::rswap<T>(T bits, int i, int j, int len);     \
+    template T bits::rev<T>(T bits);                              \
+    template T bits::shuf<T>(T bits);                             \
+    template T bits::ishuf<T>(T bits);                            \
+    template T bits::grp<T>(T bits, T mask);                      \
+    template T bits::igrp<T>(T bits, T mask);                     \
+    template T bits::omflip<T>(T bits, T mask, uint8_t ctrl);     \
+    template T bits::bfly<T>(T bits, T mask);                     \
+    template T bits::ibfly<T>(T bits, T mask);                    \
+    template T bits::trans<T>(T bits, int rows);                  \
+    template T bits::tern<T>(T xbits, T ybits, T ctrl);           \
+    template T bits::gray<T>(T bits);                             \
+    template T bits::igray<T>(T bits);                            \
+    template T bits::extl<T>(T bits, T mask);                     \
+    template T bits::extr<T>(T bits, T mask);                     \
+    template T bits::depl<T>(T bits, T mask);                     \
+    template T bits::depr<T>(T bits, T mask);
 TEMPLIFY(BITS_CC_TEMPLATE)

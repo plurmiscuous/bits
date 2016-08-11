@@ -4,6 +4,8 @@
 class Random final {
   public:
     Random();
+    Random(const Random&) = delete;
+    Random& operator=(const Random&) = delete;
 
     template <typename T> T rand();
 };

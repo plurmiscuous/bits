@@ -1,7 +1,11 @@
-#ifndef _BITS_HH_
-#define _BITS_HH_
+#ifndef BITS_H
+#define BITS_H
 
 #include <cstdint>
+
+#include "inc/extint.hh"
+
+namespace bits {
 
 /////////////////////////////
 ////    N-BIT SUPPORT    ////
@@ -15,16 +19,6 @@ static constexpr int BITS() {
 template <typename T>
 static constexpr int LOG(int p = 3, std::size_t s = 1) {
     return sizeof(T) == s ? p : LOG<T>(p + 1, s << 1);
-}
-
-template <typename T>
-static constexpr T ONE() {
-    return T(1);
-}
-
-template <typename T>
-static constexpr T ALL() {
-    return T(-1);
 }
 
 template <typename T>
@@ -130,7 +124,7 @@ T lb(T bits);
 //         1, if $bits is a power-of-2
 //         0, otherwise
 template <typename T>
-int ipow(T bits);
+bool ipow(T bits);
 
 // CEIL POWER OF 2
 //   - Parameters:
@@ -139,7 +133,7 @@ int ipow(T bits);
 //         1, if $bits is 0
 //         $bits, if $bits is already a power-of-2
 //         0, if $bits is greater than the maximum power-of-2 the uint can hold
-//         the next greatest power-of-2 greater than $bits, otherwise
+//         the next power-of-2 greater than $bits, otherwise
 template <typename T>
 T cpow(T bits);
 
@@ -384,4 +378,6 @@ T depl(T bits, T mask);
 template <typename T>
 T depr(T bits, T mask);
 
-#endif // _BITS_HH_
+}  // namespace bits
+
+#endif // BITS_H

@@ -288,8 +288,8 @@ extern size_t NR;   // the number of random test values
     const uint##N##_t flip_mask = NEG##N >> (BITS##N >> 1);                                        \
     uint##N##_t mirror_mask, invert, actual, serial;                                               \
     FOREACH_TEST_MASK(N)                                                                           \
+        mirror_mask = (test_mask & flip_mask) | ((test_mask & flip_mask) << (BITS##N >> 1));       \
         for (uint8_t ctrl = 0; ctrl < 4; ++ctrl) {                                                 \
-            mirror_mask = (test_mask & flip_mask) | ((test_mask & flip_mask) << (BITS##N >> 1));   \
             actual = omflip##N(test_case, mirror_mask, ctrl);                                      \
             check##N##_perm_assert(#func, test_case, actual);                                      \
             serial = serial_omflip##N(test_case, mirror_mask, ctrl);                               \

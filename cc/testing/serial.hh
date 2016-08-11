@@ -4,7 +4,7 @@
 namespace serial {
 
 template <typename T> int pop(T bits);
-template <typename T> bool par(T bits);
+template <typename T> int par(T bits);
 template <typename T> int ctz(T bits);
 template <typename T> int clz(T bits);
 template <typename T> int mxset(T bits);
@@ -37,5 +37,11 @@ template <typename T> T bswap(T bits, int i, int j);
 template <typename T> T rswap(T bits, int i, int j, int len);
 
 }
+
+///////////////////////////////
+////    IMPLEMENTATIONS    ////
+///////////////////////////////
+
+
 
 #endif // _SERIAL_HH_

@@ -10,12 +10,12 @@ template <typename T>
 int serial::pop(T bits) {
     int set = 0;
     for (set = 0; bits; bits >>= 1)
-        set += bits & 0x1;
+        set += static_cast<int>(bits & 0x1);
     return set;
 }
 
 template <typename T>
-bool serial::par(T bits) {
+int serial::par(T bits) {
     bool parity = 0;
     while (bits) {
         parity = !parity;
@@ -27,7 +27,7 @@ bool serial::par(T bits) {
 template <typename T>
 int serial::ctz(T bits) {
     if (!bits)
-        return BITS<T>();
+        return bits::BITS<T>();
 
     int n = 0;
     T mask = 1;
@@ -41,10 +41,10 @@ int serial::ctz(T bits) {
 template <typename T>
 int serial::clz(T bits) {
     if (!bits)
-        return BITS<T>();
+        return bits::BITS<T>();
 
     int n = 0;
-    T mask = (T) 1 << (BITS<T>() - 1);
+    T mask = (T) 1 << (bits::BITS<T>() - 1);
     while ((bits & mask) == 0) {
         n++;
         mask >>= 1;
@@ -127,7 +127,7 @@ T serial::lb(T bits) {
 template <typename T>
 bool serial::ipow(T bits) {
     T b0 = bits;
-    for (int i = 1; i < BITS<T>(); i <<= 1)
+    for (int i = 1; i < bits::BITS<T>(); i <<= 1)
         bits |= bits >> i;
     bits = (bits >> 1) + 1;
     return bits == b0;
@@ -139,7 +139,7 @@ T serial::cpow(T bits) {
         return 1;
 
     T b0 = bits;
-    for (int i = 1; i < BITS<T>(); i <<= 1)
+    for (int i = 1; i < bits::BITS<T>(); i <<= 1)
         bits |= bits >> i;
     bits = (bits >> 1) + 1;
     return bits == b0 ? b0 : (bits << 1);
@@ -147,7 +147,7 @@ T serial::cpow(T bits) {
 
 template <typename T>
 T serial::fpow(T bits) {
-    for (int i = 1; i < BITS<T>(); i <<= 1)
+    for (int i = 1; i < bits::BITS<T>(); i <<= 1)
         bits |= bits >> i;
     bits = (bits >> 1) + (bits != 0);
     return bits;
@@ -163,7 +163,7 @@ T serial::lsb(T bits) {
         ++i;
         bits >>= 1;
     }
-    return ONE<T>() << i;
+    return T(1) << i;
 }
 
 template <typename T>
@@ -174,13 +174,13 @@ T serial::msb(T bits) {
     int i = 0;
     while (bits >>= 1)
         ++i;
-    return ONE<T>() << i;
+    return T(1) << i;
 }
 
 template <typename T>
 T serial::rev(T bits) {
     T rev = 0;
-    for (std::size_t i = 0; i < BITS<T>() - 1; ++i) {
+    for (std::size_t i = 0; i < bits::BITS<T>() - 1; ++i) {
         rev |= bits & 0x1;
         rev <<= 1;
         bits >>= 1;
@@ -192,21 +192,21 @@ T serial::rev(T bits) {
 template <typename T>
 T serial::shuf(T bits) {
     T lo = bits;
-    T hi = (bits >> (BITS<T>() / 2));
+    T hi = (bits >> (bits::BITS<T>() / 2));
     T shuf = 0;
-    for (std::size_t i = 0; i < BITS<T>() / 2; ++i)
-        shuf |= (lo & ONE<T>() << i) << i | (hi & ONE<T>() << i) << (i + 1);
+    for (std::size_t i = 0; i < bits::BITS<T>() / 2; ++i)
+        shuf |= (lo & T(1) << i) << i | (hi & T(1) << i) << (i + 1);
     return shuf;
 }
 
 template <typename T>
 T serial::ishuf(T bits) {
     T one = 1;
-    T lo = bits & WORD<T>(0);
-    T hi = bits & ~WORD<T>(0);
+    T lo = bits & bits::WORD<T>(0);
+    T hi = bits & ~bits::WORD<T>(0);
     T ishuf = 0;
-    for (std::size_t i = 0; i < BITS<T>() / 2; ++i)
-        ishuf |= ((hi & one << (2 * i + 1)) << (BITS<T>() / 2 - 1 - i))
+    for (std::size_t i = 0; i < bits::BITS<T>() / 2; ++i)
+        ishuf |= ((hi & one << (2 * i + 1)) << (bits::BITS<T>() / 2 - 1 - i))
                 | ((lo & one << (2 * i)) >> i);
     return ishuf;
 }
@@ -237,13 +237,13 @@ T serial::grp(T bits, T mask) {
 
     T b1 = bits;
     T m1 = mask;
-    for (int i = 0; i < BITS<T>(); ++i, b1 >>= 1, m1 >>= 1)
+    for (int i = bits::BITS<T>(); i--; b1 >>= 1, m1 >>= 1)
         if ((m1 & 0x1) == 1)
             grp |= (b1 & 0x1) << k++;
 
     T b0 = bits;
     T m0 = mask;
-    for (int i = 0; i < BITS<T>(); ++i, b0 >>= 1, m0 >>= 1)
+    for (int i = bits::BITS<T>(); i--; b0 >>= 1, m0 >>= 1)
         if ((m0 & 0x1) == 0)
             grp |= (b0 & 0x1) << k++;
 
@@ -272,7 +272,7 @@ T serial::igrp(T bits, T mask) {
     T igrp = 0;
 
     T m1 = mask;
-    for (int i = 0; i < BITS<T>(); ++i) {
+    for (int i = 0; i < bits::BITS<T>(); ++i) {
         if ((m1 & 0x1) == 1) {
             igrp |= (bits & 0x1) << i;
             bits >>= 1;
@@ -281,7 +281,7 @@ T serial::igrp(T bits, T mask) {
     }
 
     T m0 = mask;
-    for (int i = 0; i < BITS<T>(); ++i) {
+    for (int i = 0; i < bits::BITS<T>(); ++i) {
         if ((m0 & 0x1) == 0) {
             igrp |= (bits & 0x1) << i;
             bits >>= 1;
@@ -320,18 +320,18 @@ T serial::omflip(T bits, T mask, uint8_t opts) {
     for (int i = 0; i < 2; ++i) {
         T tmp = 0;
         if (((opts >> i) & 0x1) == 0) {
-            for (int j = 0; j < BITS<T>() / 2; ++j) {
+            for (int j = 0; j < bits::BITS<T>() / 2; ++j) {
                 tmp |= ((bits >> j) & 0x1) << (2 * j);
-                tmp |= ((bits >> (j + BITS<T>() / 2)) & 0x1) << (2 * j + 1);
+                tmp |= ((bits >> (j + bits::BITS<T>() / 2)) & 0x1) << (2 * j + 1);
                 if (mask >> j & 0x1)
                     tmp = serial::bswap<T>(tmp, 2 * j, 2 * j + 1);
             }
         } else {
-            for (int j = 0; j < BITS<T>() / 2; ++j) {
+            for (int j = 0; j < bits::BITS<T>() / 2; ++j) {
                 tmp |= ((bits >> 2 * j) & 0x1) << j;
-                tmp |= ((bits >> (2 * j + 1)) & 0x1) << (j + BITS<T>() / 2);
-                if (mask >> (j + i * BITS<T>() / 2) & 0x1)
-                    tmp = serial::bswap<T>(tmp, j, j + BITS<T>() / 2);
+                tmp |= ((bits >> (2 * j + 1)) & 0x1) << (j + bits::BITS<T>() / 2);
+                if (mask >> (j + i * bits::BITS<T>() / 2) & 0x1)
+                    tmp = serial::bswap<T>(tmp, j, j + bits::BITS<T>() / 2);
             }
         }
         omflip = bits = tmp;
@@ -357,8 +357,8 @@ T serial::omflip(T bits, T mask, uint8_t opts) {
 //         url: http://palms.ee.princeton.edu/PALMSopen/lee01efficient.pdf
 template <typename T>
 T serial::bfly(T bits, T mask) {
-    for (int d = BITS<T>() / 2; d > 0; d /= 2)
-        for (int k = 0; k < BITS<T>(); k += (d << 1))
+    for (int d = bits::BITS<T>() / 2; d > 0; d /= 2)
+        for (int k = 0; k < bits::BITS<T>(); k += 2 * d)
             for (int j = 0; j < d; ++j)
                 if (mask >> (k + j) & 0x1)
                     bits = serial::bswap<T>(bits, k + j, k + j + d);
@@ -367,8 +367,8 @@ T serial::bfly(T bits, T mask) {
 
 template <typename T>
 T serial::ibfly(T bits, T mask) {
-    for (int d = 1; d <= BITS<T>() / 2; d *= 2)
-        for (int k = BITS<T>() - (d << 1); k >= 0; k -= (d << 1))
+    for (int d = 1; d <= bits::BITS<T>() / 2; d *= 2)
+        for (int k = bits::BITS<T>() - 2 * d; k >= 0; k -= 2 * d)
             for (int j = d - 1; j >= 0; --j)
                 if (mask >> (k + j) & 0x1)
                     bits = serial::bswap<T>(bits, k + j, k + j + d);
@@ -385,7 +385,7 @@ T serial::extr(T bits, T mask) {
     T res = 0;
     int k = 0;
 
-    for (int i = 0; i < BITS<T>(); ++i)
+    for (int i = 0; i < bits::BITS<T>(); ++i)
         if (mask >> i & 0x1)
             res |= (bits >> i & 0x1) << k++;
 
@@ -402,7 +402,7 @@ T serial::depl(T bits, T mask) {
     T res = 0;
     int k = 0;
 
-    for (int i = 0; i < BITS<T>(); ++i)
+    for (int i = 0; i < bits::BITS<T>(); ++i)
         if (mask >> i & 0x1)
             res |= (bits >> k++ & 0x1) << i;
 
@@ -412,8 +412,8 @@ T serial::depl(T bits, T mask) {
 template <typename T>
 T serial::extl(T bits, T mask) {
     T res = 0;
-    int k = BITS<T>();
-    for (int i = BITS<T>(); i--;)
+    int k = bits::BITS<T>();
+    for (int i = bits::BITS<T>(); i--;)
         if (mask >> i & 0x1)
             res |= (bits >> i & 0x1) << --k;
     return res;
@@ -422,9 +422,9 @@ T serial::extl(T bits, T mask) {
 template <typename T>
 T serial::depr(T bits, T mask) {
     T res = 0;
-    int k = BITS<T>();
+    int k = bits::BITS<T>();
 
-    for (int i = BITS<T>(); i--;)
+    for (int i = bits::BITS<T>(); i--;)
         if (mask >> i & 0x1)
             res |= (bits >> --k & 0x1) << i;
 
@@ -436,7 +436,7 @@ T serial::depr(T bits, T mask) {
 //         url: http://www.geeksforgeeks.org/inplace-m-x-n-size-matrix-transpose/
 template <typename T>
 T serial::trans(T bits, int rows) {
-    int cols = BITS<T>() / rows;
+    int cols = bits::BITS<T>() / rows;
     for (int i = 0; i < rows * cols; i++) {
         int j = i;
         do
@@ -449,46 +449,55 @@ T serial::trans(T bits, int rows) {
 
 template <typename T>
 T serial::rol(T bits, int rot) {
+    // rotate one bit at a time $rot times
     for (int i = rot; i--;)
-        bits = (bits << 1) | (bits >> (BITS<T>() - 1));
+        bits = (bits << 1) | (bits >> (bits::BITS<T>() - 1));
     return bits;
 }
 
 template <typename T>
 T serial::ror(T bits, int rot) {
+    // rotate one bit at a time $rot times
     for (int i = rot; i--;)
-        bits = (bits >> 1) | (bits << (BITS<T>() - 1));
+        bits = (bits >> 1) | (bits << (bits::BITS<T>() - 1));
     return bits;
 }
 
 template <typename T>
 T serial::bswap(T bits, int i, int j) {
-    assert(0 <= i && i < BITS<T>());
-    assert(0 <= j && j < BITS<T>());
+    assert(0 <= i && i < bits::BITS<T>());
+    assert(0 <= j && j < bits::BITS<T>());
+    // stored bits at indicies
     T bi = (bits >> i) & 0x1;
     T bj = (bits >> j) & 0x1;
-    bits &= ~((ONE<T>() << i) | (ONE<T>() << j));
+    // clear any set bits
+    bits &= ~((T(1) << i) | (T(1) << j));
+    // update with stored bits
     bits |= (bi << j) | (bj << i);
     return bits;
 }
 
 template <typename T>
 T serial::rswap(T bits, int i, int j, int len) {
-    assert(0 <= i && i < BITS<T>());
-    assert(0 <= j && j < BITS<T>());
-    assert(0 <= len && i + len <= BITS<T>() && j + len <= BITS<T>());
+    assert(0 <= i && i < bits::BITS<T>());
+    assert(0 <= j && j < bits::BITS<T>());
+    assert(0 <= len && i + len <= bits::BITS<T>() && j + len <= bits::BITS<T>());
     assert(i + len < j || i < j + len);
-    T mask = (ONE<T>() << len) - 1;
+    // generate a mask for $len bits
+    T mask = (T(1) << len) - 1;
+    // stored $len bits at specified indicies
     T ri = (bits >> i) & mask;
     T rj = (bits >> j) & mask;
+    // clear any set bits
     bits &= ~((mask << i) | (mask << j));
+    // update with stored bits
     bits |= (ri << j) | (rj << i);
     return bits;
 }
 
-#define SERIAL_TEMPLATE(T)                                      \
+#define SERIAL_TEMPLATE(T)                                       \
     template int serial::pop<T>(T bits);                         \
-    template bool serial::par<T>(T bits);                        \
+    template int serial::par<T>(T bits);                         \
     template int serial::ctz<T>(T bits);                         \
     template int serial::clz<T>(T bits);                         \
     template int serial::mxset<T>(T bits);                       \

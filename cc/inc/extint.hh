@@ -11,7 +11,7 @@ typedef __uint128_t uint128_t;
 #define U16(u16)        UINT16_C(u16)
 #define U32(u32)        UINT32_C(u32)
 #define U64(u64)        UINT64_C(u64)
-#define U128(h64, l64)  (((uint128_t) h64 << 64) | l64)
+#define U128(h64, l64)  (((uint128_t) (h64) << 64) | (l64))
 
 #define TEMPLIFY(T) \
     T(uint8_t)      \

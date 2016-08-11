@@ -47,14 +47,12 @@ T Random::rand() {
 }
 
 static uint64_t xs128plus() {
-    uint64_t s1 = state128plus[0];
-    uint64_t s0 = state128plus[1];
-    state128plus[0] = s0;
-    s1 ^= s1 << 23;
-    s1 ^= s1 >> 17;
-    s0 ^= s0 >> 26;
-    state128plus[1] = s0 ^ s1;
-    return state128plus[1] + state128plus[0];
+    uint64_t s0 = state128plus[0];
+    uint64_t s1 = state128plus[0] = state128plus[1];
+    s0 ^= s0 << 23;
+    s0 ^= s0 >> 17;
+    s1 ^= s1 >> 26;
+    return (state128plus[1] = s0 ^ s1) + state128plus[0];
 }
 
 // NB: The modifications were made because the 128-bit output from the standard
@@ -65,13 +63,11 @@ static uint64_t xs128plus() {
 static uint128_t xs1024mod() {
     static int p;
     uint64_t s0 = state1024mod[p];
-    p = (p + 1) & 0xF;
-    uint64_t s1 = state1024mod[p];
+    uint64_t s1 = state1024mod[p = (p + 1) & 0xF];
     s1 ^= s1 << 31;
     s1 ^= s1 >> 11;
     s0 ^= s0 >> 30;
-    state1024mod[p] = s0 ^ s1;
-    return U128(0x1, state1024mod[p]) * U128(0x1, 0x106689D45497FDB5);
+    return U128(0x1, state1024mod[p] = s0 ^ s1) * U128(0x1, 0x106689D45497FDB5);
 }
 
 #define RANDOM_RAND_TEMPLATE(T) template T Random::rand<T>();

@@ -198,7 +198,7 @@ TEMPLATE_STD(SERIAL_MSB_IMPL)
 #define SERIAL_REV_IMPL(N)                                                                         \
     uint##N##_t serial_rev##N(uint##N##_t bits) {                                                  \
         uint##N##_t rev = 0;                                                                       \
-        for (size_t i = 0; i < BITS##N - 1; ++i, rev <<= 1, bits >>= 1)                            \
+        for (size_t i = BITS##N; --i; rev <<= 1, bits >>= 1)                                       \
             rev |= bits & 0x1;                                                                     \
         rev |= bits & 0x1;                                                                         \
         return rev;                                                                                \
